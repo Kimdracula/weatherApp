@@ -2,10 +2,10 @@ package com.homework.weatherapp.repository
 
 import com.homework.weatherapp.model.Weather
 
-class RepositoryImpl: Repository {
+class RepositoryImpl : Repository {
     override fun getWeatherByLocal(): Weather {
 
-        Thread.sleep(1000)
+        Thread.sleep(100)
         return Weather()
     }
 

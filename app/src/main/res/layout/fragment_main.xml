@@ -5,55 +5,75 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_margin="8dp"
+    android:layout_margin="@dimen/border_margin"
+    android:id="@+id/mainView"
     tools:context=".view.MainFragment">
+
+    <LinearLayout
+        android:id="@+id/infoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        tools:visibility="visible">
 
     <TextView
         android:id="@+id/cityName"
-        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/margin_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="35sp"
+        android:textSize="@dimen/city_text_size"
         android:textStyle="bold"
         tools:text="Санкт Петербург" />
+    <TextView
+        android:id="@+id/coordinatesHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_between_lines"
+        android:textColor="@color/white"
+        android:text="@string/coordinates"/>
 
     <TextView
         android:id="@+id/coordinates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/margin_between_lines"
         tools:text="20200, 20000" />
 
     <TextView
         android:id="@+id/temperatureHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Температура" />
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/margin_between_lines"
+        android:text="@string/temperature_header" />
 
     <TextView
         android:id="@+id/temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/margin_between_lines"
         tools:text="0" />
 
     <TextView
-        android:id="@+id/feelsLikeLabel"
+        android:id="@+id/feelsLikeHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Температура ощущается:" />
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/margin_between_lines"
+        android:text="@string/feels_like_header" />
 
     <TextView
         android:id="@+id/feelsLike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/margin_between_lines"
         tools:text="-0" />
 
-
+    </LinearLayout>
 <FrameLayout
 android:id="@+id/loadingLayout"
 android:layout_width="match_parent"
@@ -62,11 +82,12 @@ android:visibility="gone"
 tools:visibility="visible">
 
 <com.google.android.material.progressindicator.CircularProgressIndicator
-    style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-    app:indicatorColor="@color/purple_700"
+    style="@style/Widget.Material3.CircularProgressIndicator"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center" />
+    android:layout_gravity="center"
+    app:indicatorColor="@color/teal_200"
+    android:indeterminate="true" />
 </FrameLayout>
 
 

@@ -2,4 +2,7 @@
     <string name="app_name">WeatherApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="coordinates">Координаты:</string>
+    <string name="temperature_header">Температура:</string>
+    <string name="feels_like_header">Температура ощущается как:</string>
 </resources>
