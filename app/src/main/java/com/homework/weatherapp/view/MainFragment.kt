@@ -48,15 +48,7 @@ class MainFragment : Fragment() {
         when (data) {
             is ResponseState.Error -> {
                 binding.loadingLayout.visibility = View.GONE
-                Snackbar.make(
-                    binding.mainView,
-                    "Не получилось загрузить данные.",
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction("Eщё раз?") {
-                        viewModel.getWeather()
-                    }
-                    .show()
+                showSnackBar()
             }
             is ResponseState.Loading -> {
                 binding.loadingLayout.visibility = View.VISIBLE
@@ -73,5 +65,17 @@ class MainFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun showSnackBar() {
+        Snackbar.make(
+            binding.mainView,
+            "Не получилось загрузить данные...",
+            Snackbar.LENGTH_INDEFINITE
+        )
+            .setAction("Eщё раз?") {
+                viewModel.getWeather()
+            }
+            .show()
     }
 }
