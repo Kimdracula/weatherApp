@@ -15,16 +15,22 @@ import com.homework.weatherapp.view_model.ResponseState
 
 class MainFragment : Fragment() {
 
-    private lateinit var binding: FragmentMainBinding
     private lateinit var viewModel: MainViewModel
-
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
