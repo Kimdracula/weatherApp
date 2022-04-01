@@ -16,6 +16,7 @@ class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
+    private lateinit var mfAdapter: MfAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,18 +28,24 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-       init()
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext())
+        binding.recycleList.layoutManager
+    //   mfAdapter = MfAdapter()
+        binding.recycleList.adapter = mfAdapter
     }
 
-    private fun init() {
-       binding.recycleView.layoutManager = LinearLayoutManager(requireContext())
+
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            MainFragment().apply {
+            }
     }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
-
+        _binding = null
     }
 }
 
