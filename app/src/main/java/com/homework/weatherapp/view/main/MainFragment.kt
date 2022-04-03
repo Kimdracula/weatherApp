@@ -8,6 +8,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.R
 import com.homework.weatherapp.databinding.FragmentMainBinding
@@ -52,6 +56,15 @@ class MainFragment : Fragment(), OnItemListClickListener {
         }
         binding.recycleList.adapter = adapter
         viewModel.getData().observe(viewLifecycleOwner, observer)
+
+        val itemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        itemDecoration.setDrawable(resources.getDrawable(R.drawable.separator, null))
+        binding.recycleList.addItemDecoration(itemDecoration)
+
+
+
+
+
 
         binding.floatingActionButton.setOnClickListener {
             isRussian = !isRussian
