@@ -8,10 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.R
 import com.homework.weatherapp.databinding.FragmentMainBinding
@@ -26,10 +24,9 @@ class MainFragment : Fragment(), OnItemListClickListener {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    var isRussian = true
+    private var isRussian = true
     private val adapter = MfAdapter(this)
     private lateinit var viewModel: MainViewModel
-
 
 
     override fun onCreateView(
@@ -40,32 +37,24 @@ class MainFragment : Fragment(), OnItemListClickListener {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        val observer = object : Observer<ResponseState> {
-            override fun onChanged(data: ResponseState?) {
-                if (data != null) {
-                    renderData(data)
-                }
+        val observer = Observer<ResponseState> { data ->
+            if (data != null) {
+                renderData(data)
             }
-
         }
+        initViews(observer)
+        initDecorator()
+        viewModel.getWeatherRussia()
+    }
+
+    private fun initViews(observer: Observer<ResponseState>) {
         binding.recycleList.adapter = adapter
         viewModel.getData().observe(viewLifecycleOwner, observer)
-
-        val itemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
-        itemDecoration.setDrawable(resources.getDrawable(R.drawable.separator, null))
-        binding.recycleList.addItemDecoration(itemDecoration)
-
-
-
-
-
-
         binding.floatingActionButton.setOnClickListener {
             isRussian = !isRussian
             if (isRussian) {
@@ -86,14 +75,16 @@ class MainFragment : Fragment(), OnItemListClickListener {
                 viewModel.getWeatherWorld()
             }
         }
+    }
 
-
-        viewModel.getWeatherRussia()
+    private fun initDecorator() {
+        val itemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        itemDecoration.setDrawable(resources.getDrawable(R.drawable.separator, null))
+        binding.recycleList.addItemDecoration(itemDecoration)
     }
 
     private fun renderData(data: ResponseState) {
         when (data) {
-
             is ResponseState.Error -> {
                 binding.loadingLayoutMF.visibility = View.GONE
                 showSnackBar()
@@ -105,8 +96,6 @@ class MainFragment : Fragment(), OnItemListClickListener {
                 binding.loadingLayoutMF.visibility = View.GONE
                 binding.recycleList.visibility = View.VISIBLE
                 adapter.setWeatherList(data.weatherData)
-
-
             }
         }
     }
@@ -120,7 +109,6 @@ class MainFragment : Fragment(), OnItemListClickListener {
             viewModel.getWeatherRussia()
         }.show()
     }
-
 
     companion object {
         @JvmStatic
@@ -136,9 +124,11 @@ class MainFragment : Fragment(), OnItemListClickListener {
     override fun onItemClick(weather: Weather) {
         val bundle = Bundle()
         bundle.putParcelable(KEY_BUNDLE_WEATHER, weather)
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
-            DetailsFragment.newInstance(bundle))
-        .addToBackStack("").commit()
+        requireActivity().supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            DetailsFragment.newInstance(bundle)
+        )
+            .addToBackStack("").commit()
     }
 }
 

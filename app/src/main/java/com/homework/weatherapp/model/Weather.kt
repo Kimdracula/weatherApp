@@ -4,14 +4,19 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Weather(val city:City =getDefaultCity(), val temperature: Int =-20, val fellsLike :Int=-30):Parcelable
+data class Weather(
+    val city: City = getDefaultCity(),
+    val temperature: Int = -20,
+    val fellsLike: Int = -30
+) : Parcelable
 
 @Parcelize
-data class City(val name:String,val lat:Double,val lon:Double):Parcelable
+data class City(val name: String, val lat: Double, val lon: Double) : Parcelable
 
 
-fun getDefaultCity():City{
-    return City("Saint-Petersburg",59.9339,30.3061)}
+fun getDefaultCity(): City {
+    return City("Saint-Petersburg", 59.9339, 30.3061)
+}
 
 fun getWorldCities(): List<Weather> {
     return listOf(
@@ -33,8 +38,10 @@ fun getRussianCities(): List<Weather> {
         Weather(City("Москва", 55.755826, 37.617299900000035), 1, 2),
         Weather(City("Санкт-Петербург", 59.9342802, 30.335098600000038), 3, 3),
         Weather(City("Новосибирск", 55.00835259999999, 82.93573270000002), 5, 6),
-        Weather(City("Екатеринбург", 56.83892609999999, 60.60570250000001), 7,
-            8),
+        Weather(
+            City("Екатеринбург", 56.83892609999999, 60.60570250000001), 7,
+            8
+        ),
         Weather(City("Нижний Новгород", 56.2965039, 43.936059), 9, 10),
         Weather(City("Казань", 55.8304307, 49.06608060000008), 11, 12),
         Weather(City("Челябинск", 55.1644419, 61.4368432), 13, 14),
