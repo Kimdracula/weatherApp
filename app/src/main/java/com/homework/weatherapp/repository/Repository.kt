@@ -4,5 +4,6 @@ import com.homework.weatherapp.model.Weather
 
 interface Repository {
     fun getWeatherByLocal(): Weather
-    fun getWeatherByServer():Weather
+    fun getWorldWeatherByLocal():List<Weather>
+    fun getRussianWeatherByLocal():List<Weather>
 }

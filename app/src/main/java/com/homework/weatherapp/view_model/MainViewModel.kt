@@ -19,12 +19,12 @@ class MainViewModel(
             liveData.postValue(ResponseState.Loading)
             when ((0..5).random()) {
                 1 -> {
-                    repository.getWeatherByLocal()
-                    liveData.postValue(ResponseState.Success(repository.getWeatherByLocal()))
+                    repository.getWorldWeatherByLocal()
+                    liveData.postValue(ResponseState.Success(repository.getWorldWeatherByLocal()))
                 }
                 2 -> {
-                    repository.getWeatherByServer()
-                    liveData.postValue(ResponseState.Success(repository.getWeatherByServer()))
+                    repository.getRussianWeatherByLocal()
+                    liveData.postValue(ResponseState.Success(repository.getRussianWeatherByLocal()))
                 }
                 else -> liveData.postValue(ResponseState.Error(IllegalAccessError()))
             }

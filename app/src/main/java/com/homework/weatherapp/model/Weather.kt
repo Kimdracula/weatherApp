@@ -1,8 +1,14 @@
 package com.homework.weatherapp.model
 
-data class Weather(val city:City =getDefaultCity(), val temperature: Int =-20, val fellsLike :Int=-30)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-data class City(val name:String,val lat:Double,val lon:Double)
+@Parcelize
+data class Weather(val city:City =getDefaultCity(), val temperature: Int =-20, val fellsLike :Int=-30):Parcelable
+
+@Parcelize
+data class City(val name:String,val lat:Double,val lon:Double):Parcelable
+
 
 fun getDefaultCity():City{
     return City("Saint-Petersburg",59.9339,30.3061)}
