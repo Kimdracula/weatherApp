@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
-    tools:context=".view.MainFragment">
+    tools:context=".view.main.MainFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -15,7 +15,20 @@
         tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_margin="20dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/russia_ic"
+        app:maxImageSize="56dp"
+        app:tint= "@null"
+        android:focusable="true" />
 
     <FrameLayout
         android:id="@+id/loadingLayout_MF"

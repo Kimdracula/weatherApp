@@ -1,4 +1,4 @@
-package com.homework.weatherapp.view
+package com.homework.weatherapp.view.main
 
 import com.homework.weatherapp.model.Weather
 

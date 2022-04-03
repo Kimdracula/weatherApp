@@ -14,20 +14,15 @@ class MainViewModel(
         return liveData
     }
 
-    fun getWeather() {
+    fun getWeatherRussia() = getWeather(true)
+    fun getWeatherWorld() = getWeather(false)
+
+    private fun getWeather(isRussian:Boolean) {
         Thread {
             liveData.postValue(ResponseState.Loading)
-            when ((0..5).random()) {
-                1 -> {
-                    repository.getWorldWeatherByLocal()
-                    liveData.postValue(ResponseState.Success(repository.getWorldWeatherByLocal()))
-                }
-                2 -> {
-                    repository.getRussianWeatherByLocal()
-                    liveData.postValue(ResponseState.Success(repository.getRussianWeatherByLocal()))
-                }
-                else -> liveData.postValue(ResponseState.Error(IllegalAccessError()))
-            }
+            val answer = if(!isRussian) repository.getWorldWeatherByLocal()
+            else repository.getRussianWeatherByLocal()
+            liveData.postValue(ResponseState.Success(answer))
         }.start()
 
 

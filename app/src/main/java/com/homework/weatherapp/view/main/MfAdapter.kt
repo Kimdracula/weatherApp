@@ -1,4 +1,4 @@
-package com.homework.weatherapp.view
+package com.homework.weatherapp.view.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
