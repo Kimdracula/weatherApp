@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.homework.weatherapp.databinding.RecycleItemBinding
+import com.homework.weatherapp.model.Weather
 
-class MfAdapter(private val citiesList: List<String>):
+class MfAdapter(private val citiesList: List<Weather>):
     RecyclerView.Adapter<MfAdapter.ViewHolder>(){
 
 
@@ -16,17 +17,15 @@ class MfAdapter(private val citiesList: List<String>):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-with(holder){
-    with(citiesList[position]){
-binding.textViewCityName.text
-    }
-}
+holder.bind(citiesList[position])
     }
 
     override fun getItemCount(): Int = citiesList.size
 
-   inner class ViewHolder(val binding: RecycleItemBinding): RecyclerView.ViewHolder(binding.root){
-
-    }
+   inner class ViewHolder(private val binding: RecycleItemBinding): RecyclerView.ViewHolder(binding.root){
+fun bind(weather: Weather) {
+    binding.textViewCityName.text = weather.city.name
+}
+   }
 
 }

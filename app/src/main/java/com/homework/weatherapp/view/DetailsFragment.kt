@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
-import com.homework.weatherapp.databinding.FragmentMainBinding
 import com.homework.weatherapp.view_model.MainViewModel
 import com.homework.weatherapp.view_model.ResponseState
 
