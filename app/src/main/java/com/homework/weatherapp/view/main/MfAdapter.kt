@@ -35,11 +35,12 @@ class MfAdapter(
     inner class ViewHolder(private val binding: RecycleItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(weather: Weather) {
-            binding.textViewCityName.text = weather.city.name
-            binding.root.setOnClickListener {
+            with(binding){
+           textViewCityName.text = weather.city.name
+            root.setOnClickListener {
                 onItemListClickListener.onItemClick(weather)
             }
         }
-    }
+    }}
 
 }

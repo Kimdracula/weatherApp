@@ -26,7 +26,9 @@ class MainFragment : Fragment(), OnItemListClickListener {
     private val binding get() = _binding!!
     private var isRussian = true
     private val adapter = MfAdapter(this)
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
 
 
     override fun onCreateView(
@@ -40,39 +42,37 @@ class MainFragment : Fragment(), OnItemListClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
-        val observer = Observer<ResponseState> { data ->
-            if (data != null) {
-                renderData(data)
-            }
-        }
+        val observer = Observer<ResponseState> { it.let { renderData(it) } }
         initViews(observer)
         initDecorator()
         viewModel.getWeatherRussia()
     }
 
     private fun initViews(observer: Observer<ResponseState>) {
-        binding.recycleList.adapter = adapter
-        viewModel.getData().observe(viewLifecycleOwner, observer)
-        binding.floatingActionButton.setOnClickListener {
-            isRussian = !isRussian
-            if (isRussian) {
-                viewModel.getWeatherRussia()
-                binding.floatingActionButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.russia_ic
-                    )
-                )
-            } else {
-                binding.floatingActionButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.earth_ic
-                    )
-                )
-                viewModel.getWeatherWorld()
+        with(binding) {
+            with(viewModel) {
+                recycleList.adapter = adapter
+                getData().observe(viewLifecycleOwner, observer)
+                floatingActionButton.setOnClickListener {
+                    isRussian = !isRussian
+                    if (isRussian) {
+                        getWeatherRussia()
+                        floatingActionButton.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.russia_ic
+                            )
+                        )
+                    } else {
+                        floatingActionButton.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.earth_ic
+                            )
+                        )
+                        getWeatherWorld()
+                    }
+                }
             }
         }
     }
@@ -84,18 +84,20 @@ class MainFragment : Fragment(), OnItemListClickListener {
     }
 
     private fun renderData(data: ResponseState) {
-        when (data) {
-            is ResponseState.Error -> {
-                binding.loadingLayoutMF.visibility = View.GONE
-                showSnackBar()
-            }
-            is ResponseState.Loading -> {
-                binding.loadingLayoutMF.visibility = View.VISIBLE
-            }
-            is ResponseState.Success -> {
-                binding.loadingLayoutMF.visibility = View.GONE
-                binding.recycleList.visibility = View.VISIBLE
-                adapter.setWeatherList(data.weatherData)
+        with(binding) {
+            when (data) {
+                is ResponseState.Error -> {
+                    loadingLayoutMF.visibility = View.GONE
+                    showSnackBar()
+                }
+                is ResponseState.Loading -> {
+                    loadingLayoutMF.visibility = View.VISIBLE
+                }
+                is ResponseState.Success -> {
+                    loadingLayoutMF.visibility = View.GONE
+                    recycleList.visibility = View.VISIBLE
+                    adapter.setWeatherList(data.weatherData)
+                }
             }
         }
     }
@@ -115,18 +117,17 @@ class MainFragment : Fragment(), OnItemListClickListener {
         fun newInstance() = MainFragment()
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     override fun onItemClick(weather: Weather) {
-        val bundle = Bundle()
-        bundle.putParcelable(KEY_BUNDLE_WEATHER, weather)
         requireActivity().supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            DetailsFragment.newInstance(bundle)
+            DetailsFragment.newInstance(Bundle().apply {
+                putParcelable(KEY_BUNDLE_WEATHER, weather)
+            })
         )
             .addToBackStack("").commit()
     }
