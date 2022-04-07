@@ -5,16 +5,9 @@ import com.homework.weatherapp.model.getRussianCities
 import com.homework.weatherapp.model.getWorldCities
 
 class RepositoryImpl : Repository {
-    override fun getWeatherByLocal(): Weather {
-        return Weather()
-    }
+    override fun getWeatherByLocal(): Weather = Weather()
 
-    override fun getWorldWeatherByLocal(): List<Weather> {
-       return getWorldCities()
-    }
+    override fun getWorldWeatherByLocal(): List<Weather> = getWorldCities()
 
-    override fun getRussianWeatherByLocal(): List<Weather> {
-        return getRussianCities()
-    }
-
+    override fun getRussianWeatherByLocal(): List<Weather> = getRussianCities()
 }

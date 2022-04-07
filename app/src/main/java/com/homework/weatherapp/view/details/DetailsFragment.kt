@@ -12,7 +12,6 @@ import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
 
 class DetailsFragment : Fragment() {
 
-
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -41,20 +40,21 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val weather: Weather = requireArguments().getParcelable<Weather>(KEY_BUNDLE_WEATHER)!!
-        renderData(weather)
+        renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
     }
 
     private fun renderData(weather: Weather) {
-
-        binding.infoLayout.visibility = View.VISIBLE
-        binding.loadingLayout.visibility = View.GONE
-        binding.cityName.text = weather.city.name
-        binding.coordinates.text =
-            "Широта: ${weather.city.lat} Долгота: ${weather.city.lon}"
-        binding.temperature.text = weather.temperature.toString()
-        binding.feelsLike.text = weather.fellsLike.toString()
-
+        with(binding) {
+            weather.also {
+                infoLayout.visibility = View.VISIBLE
+                loadingLayout.visibility = View.GONE
+                cityName.text = it.city.name
+                coordinates.text =
+                    "Широта: ${it.city.lat} Долгота: ${it.city.lon}"
+                temperature.text = it.temperature.toString()
+                feelsLike.text = it.fellsLike.toString()
+            }
+        }
     }
 }
 
