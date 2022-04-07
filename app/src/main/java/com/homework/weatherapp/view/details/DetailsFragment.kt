@@ -45,13 +45,15 @@ class DetailsFragment : Fragment() {
 
     private fun renderData(weather: Weather) {
         with(binding) {
-            infoLayout.visibility = View.VISIBLE
-            loadingLayout.visibility = View.GONE
-            cityName.text = weather.city.name
-            coordinates.text =
-                "Широта: ${weather.city.lat} Долгота: ${weather.city.lon}"
-            temperature.text = weather.temperature.toString()
-            feelsLike.text = weather.fellsLike.toString()
+            weather.also {
+                infoLayout.visibility = View.VISIBLE
+                loadingLayout.visibility = View.GONE
+                cityName.text = it.city.name
+                coordinates.text =
+                    "Широта: ${it.city.lat} Долгота: ${it.city.lon}"
+                temperature.text = it.temperature.toString()
+                feelsLike.text = it.fellsLike.toString()
+            }
         }
     }
 }

@@ -88,7 +88,10 @@ class MainFragment : Fragment(), OnItemListClickListener {
             when (data) {
                 is ResponseState.Error -> {
                     loadingLayoutMF.visibility = View.GONE
-                    showSnackBar()
+                    fragmentMain.showSnackBar(
+                        R.string.snack_text,
+                        R.string.snack_action_text
+                    )
                 }
                 is ResponseState.Loading -> {
                     loadingLayoutMF.visibility = View.VISIBLE
@@ -102,12 +105,12 @@ class MainFragment : Fragment(), OnItemListClickListener {
         }
     }
 
-    private fun showSnackBar() {
-        Snackbar.make(
-            binding.fragmentMain,
-            "Не получилось загрузить данные...",
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction("Eщё раз?") {
+    private fun View.showSnackBar(
+        textToDisplay: Int,
+        textForAction: Int,
+        length: Int = Snackbar.LENGTH_INDEFINITE
+    ) {
+        Snackbar.make(this, textToDisplay, length).setAction(textForAction) {
             viewModel.getWeatherRussia()
         }.show()
     }
