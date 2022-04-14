@@ -1,21 +1,22 @@
 package com.homework.weatherapp.view.details
 
 import android.os.Handler
+import android.os.Looper
 import com.google.gson.Gson
 import com.homework.weatherapp.model.WeatherDTO
+import com.homework.weatherapp.repository.WeatherLoaderResponse
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class WeatherLoader {
+class WeatherLoader(private val wlResponse: WeatherLoaderResponse) {
 
-    val handler= Handler()
 
  fun loadWeather(lat: Double, lon: Double){
 Thread{
     var urlConnection: HttpURLConnection? = null
-    val url = URL("https://api.weather.yandex.ru/v2/forecast?lat=55.75396&lon=37.620393")
+    val url = URL("https://api.weather.yandex.ru/v2/forecast?lat=$lat&$lon")
     urlConnection = url.openConnection() as HttpURLConnection
     urlConnection.apply {
         requestMethod = "GET"
@@ -25,10 +26,11 @@ Thread{
     val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
 
     val weatherDTO:WeatherDTO = Gson().fromJson(reader,WeatherDTO::class.java)
-
+Handler(Looper.getMainLooper()).post{
+    wlResponse.displayWeather(weatherDTO)
+}
 
 }.start()
-
 
  }
 }

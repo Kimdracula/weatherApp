@@ -30,8 +30,6 @@ data class Info(
     val p: Boolean,
     @SerializedName("slug")
     val slug: String,
-    @SerializedName("tzinfo")
-    val tzinfo: Tzinfo,
     @SerializedName("url")
     val url: String,
     @SerializedName("zoom")

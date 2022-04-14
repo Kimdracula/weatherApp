@@ -4,8 +4,7 @@ package com.homework.weatherapp.model
 import com.google.gson.annotations.SerializedName
 
 data class Fact(
-    @SerializedName("accum_prec")
-    val accumPrec: AccumPrec,
+
     @SerializedName("cloudness")
     val cloudness: Int,
     @SerializedName("condition")
