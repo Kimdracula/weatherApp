@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
+import com.homework.weatherapp.model.Fact
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.model.WeatherDTO
 import com.homework.weatherapp.repository.WeatherLoaderResponse
