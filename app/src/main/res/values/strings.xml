@@ -6,5 +6,7 @@
     <string name="feels_like_header">Температура ощущается как:</string>
     <string name="snack_text">Не получилось загрузить данные…</string>
     <string name="snack_action_text">Ещё раз?</string>
+    <string name="humidity_header">Влажность воздуха:</string>
+    <string name="condition_header">Состояние погоды:</string>
 
 </resources>
