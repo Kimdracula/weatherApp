@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 
 class DetailsFragment : Fragment() {

@@ -1,28 +1,55 @@
 package com.homework.weatherapp.model
 
+
+import com.google.gson.annotations.SerializedName
+
 data class Night(
-    val _source: String,
+    @SerializedName("cloudness")
     val cloudness: Int,
+    @SerializedName("condition")
     val condition: String,
+    @SerializedName("daytime")
     val daytime: String,
-    val feels_like: Int,
+    @SerializedName("feels_like")
+    val feelsLike: Int,
+    @SerializedName("humidity")
     val humidity: Int,
+    @SerializedName("icon")
     val icon: String,
+    @SerializedName("polar")
     val polar: Boolean,
-    val prec_mm: Int,
-    val prec_period: Int,
-    val prec_prob: Int,
-    val prec_strength: Int,
-    val prec_type: Int,
-    val pressure_mm: Int,
-    val pressure_pa: Int,
-    val soil_moisture: Double,
-    val soil_temp: Int,
-    val temp_avg: Int,
-    val temp_max: Int,
-    val temp_min: Int,
-    val uv_index: Int,
-    val wind_dir: String,
-    val wind_gust: Double,
-    val wind_speed: Double
+    @SerializedName("prec_mm")
+    val precMm: Int,
+    @SerializedName("prec_period")
+    val precPeriod: Int,
+    @SerializedName("prec_prob")
+    val precProb: Int,
+    @SerializedName("prec_strength")
+    val precStrength: Int,
+    @SerializedName("prec_type")
+    val precType: Int,
+    @SerializedName("pressure_mm")
+    val pressureMm: Int,
+    @SerializedName("pressure_pa")
+    val pressurePa: Int,
+    @SerializedName("soil_moisture")
+    val soilMoisture: Double,
+    @SerializedName("soil_temp")
+    val soilTemp: Int,
+    @SerializedName("_source")
+    val source: String,
+    @SerializedName("temp_avg")
+    val tempAvg: Int,
+    @SerializedName("temp_max")
+    val tempMax: Int,
+    @SerializedName("temp_min")
+    val tempMin: Int,
+    @SerializedName("uv_index")
+    val uvIndex: Int,
+    @SerializedName("wind_dir")
+    val windDir: String,
+    @SerializedName("wind_gust")
+    val windGust: Double,
+    @SerializedName("wind_speed")
+    val windSpeed: Double
 )

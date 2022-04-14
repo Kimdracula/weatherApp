@@ -1,7 +1,13 @@
 package com.homework.weatherapp.model
 
+
+import com.google.gson.annotations.SerializedName
+
 data class AccumPrec(
-    val `1`: Int,
-    val `3`: Double,
-    val `7`: Double
+    @SerializedName("1")
+    val x1: Int,
+    @SerializedName("3")
+    val x3: Double,
+    @SerializedName("7")
+    val x7: Double
 )

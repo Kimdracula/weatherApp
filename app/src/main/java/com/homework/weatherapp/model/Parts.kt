@@ -1,10 +1,19 @@
 package com.homework.weatherapp.model
 
+
+import com.google.gson.annotations.SerializedName
+
 data class Parts(
+    @SerializedName("day")
     val day: Day,
-    val day_short: DayShort,
+    @SerializedName("day_short")
+    val dayShort: DayShort,
+    @SerializedName("evening")
     val evening: Evening,
+    @SerializedName("morning")
     val morning: Morning,
+    @SerializedName("night")
     val night: Night,
-    val night_short: NightShort
+    @SerializedName("night_short")
+    val nightShort: NightShort
 )
