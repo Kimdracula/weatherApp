@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName
 
 data class WeatherDTO(
     @SerializedName("fact")
-    val fact: Fact,
+    val factDTO: FactDTO,
 
     @SerializedName("geo_object")
-    val geoObject: GeoObject,
+    val geoObjectDTO: GeoObjectDTO,
     @SerializedName("info")
-    val info: Info,
+    val infoDTO: InfoDTO,
     @SerializedName("now")
     val now: Int,
     @SerializedName("now_dt")

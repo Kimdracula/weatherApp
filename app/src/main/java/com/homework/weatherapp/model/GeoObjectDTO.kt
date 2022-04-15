@@ -3,9 +3,9 @@ package com.homework.weatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GeoObject(
+data class GeoObjectDTO(
     @SerializedName("country")
-    val country: Country,
+    val countryDTO: CountryDTO,
     @SerializedName("locality")
-    val locality: Locality
+    val localityDTO: LocalityDTO
 )

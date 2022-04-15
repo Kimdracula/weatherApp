@@ -10,7 +10,6 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import kotlin.properties.Delegates
 
 class WeatherLoader(private val wlResponse: WeatherLoaderResponse) {
 
@@ -22,8 +21,8 @@ private var responseCode:Int? = null
     fun loadWeather(lat: Double, lon: Double){
 Thread{
     try {
-        val url = URL("https://api.weather.yandex.ru/v2/forecast?lat=$lat&lon=$lon&[lang=ru_RU]")
-       // val url = URL("http://212.86.114.27/v2/forecast?lat=$lat&lon=$lon")
+       // val url = URL("https://api.weather.yandex.ru/v2/forecast?lat=$lat&lon=$lon&[lang=ru_RU]")
+        val url = URL("http://212.86.114.27/v2/informers?lat=$lat&lon=$lon")
 
         urlConnection = url.openConnection() as HttpURLConnection
         urlConnection?.apply {
@@ -34,7 +33,9 @@ Thread{
         }
         responseCode = urlConnection!!.responseCode
 
-    }catch (ex: IOException){
+    }catch (IOEx: IOException){
+        responseCode?.let { wlResponse.onError(ResponseState.Error(IOEx), it) }
+    }catch (ex: Exception) {
         responseCode?.let { wlResponse.onError(ResponseState.Error(ex), it) }
     }
     try {
@@ -46,7 +47,11 @@ Thread{
         urlConnection!!.disconnect()
     }catch (numberFormatEx: NumberFormatException){
         responseCode?.let { wlResponse.onError(ResponseState.Error(numberFormatEx), it) }
-    }catch (ex:IOException){
+    }catch (IOex:IOException){
+        responseCode?.let { wlResponse.onError(ResponseState.Error(IOex), it) }
+    }catch (illegalStateEx:IllegalStateException){
+        responseCode?.let { wlResponse.onError(ResponseState.Error(illegalStateEx), it) }
+    }catch (ex: Exception) {
         responseCode?.let { wlResponse.onError(ResponseState.Error(ex), it) }
     }
 

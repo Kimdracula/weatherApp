@@ -3,7 +3,7 @@ package com.homework.weatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Info(
+data class InfoDTO(
     @SerializedName("def_pressure_mm")
     val defPressureMm: Int,
     @SerializedName("def_pressure_pa")

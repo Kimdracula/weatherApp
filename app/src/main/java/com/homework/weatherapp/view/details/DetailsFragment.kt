@@ -1,5 +1,6 @@
 package com.homework.weatherapp.view.details
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -52,6 +53,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
         renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderData(weather: Weather) {
         WeatherLoader(this).loadWeather(weather.city.lat, weather.city.lon)
         binding.cityName.text = weather.city.name
@@ -59,19 +61,19 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
             "Широта: ${weather.city.lat} Долгота: ${weather.city.lon}"
     }
 
+    @SuppressLint("SetTextI18n")
     override fun displayWeather(weatherDTO: WeatherDTO) {
         with(binding) {
             infoLayout.visibility = View.VISIBLE
             loadingLayout.visibility = View.GONE
-            temperature.text = weatherDTO.fact.temp.toString()
-            feelsLike.text = weatherDTO.fact.feelsLike.toString()
-            condition.text = weatherDTO.fact.condition
-            humidity.text = "${weatherDTO.fact.humidity.toString()} %"
+            temperature.text = weatherDTO.factDTO.temp.toString()
+            feelsLike.text = weatherDTO.factDTO.feelsLike.toString()
+            condition.text = weatherDTO.factDTO.condition
+            humidity.text = "${weatherDTO.factDTO.humidity} %"
         }
     }
 
     override fun onError(error: ResponseState, responseCode: Int) {
-
         LoaderExceptions().check(responseCode)
             ?.let { Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show() }
         Log.d("@@@", "$error Код ошибки: $responseCode ")
