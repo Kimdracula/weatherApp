@@ -1,21 +1,28 @@
 package com.homework.weatherapp.view.details
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.model.WeatherDTO
+import com.homework.weatherapp.repository.LoaderExceptions
+import com.homework.weatherapp.repository.WeatherLoader
 import com.homework.weatherapp.repository.WeatherLoaderResponse
 import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.homework.weatherapp.view_model.ResponseState
 
 
 class DetailsFragment : Fragment(), WeatherLoaderResponse {
 
+
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,19 +52,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
         renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
     }
 
-    private fun renderData(weather: Weather) {/*
-        with(binding) {
-            weather.also {
-                infoLayout.visibility = View.VISIBLE
-                loadingLayout.visibility = View.GONE
-                cityName.text = it.city.name
-                coordinates.text =
-                    "Широта: ${it.city.lat} Долгота: ${it.city.lon}"
-                temperature.text = it.temperature.toString()
-                feelsLike.text = it.fellsLike.toString()
-            }
-        }
-        */
+    private fun renderData(weather: Weather) {
         WeatherLoader(this).loadWeather(weather.city.lat, weather.city.lon)
         binding.cityName.text = weather.city.name
         binding.coordinates.text =
@@ -73,6 +68,13 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
             condition.text = weatherDTO.fact.condition
             humidity.text = "${weatherDTO.fact.humidity.toString()} %"
         }
+    }
+
+    override fun onError(error: ResponseState, responseCode: Int) {
+
+        LoaderExceptions().check(responseCode)
+            ?.let { Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show() }
+        Log.d("@@@", "$error Код ошибки: $responseCode ")
     }
 }
 

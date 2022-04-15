@@ -96,7 +96,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
                 is ResponseState.Loading -> {
                     loadingLayoutMF.visibility = View.VISIBLE
                 }
-                is ResponseState.Success -> {
+                is ResponseState.SuccessLocal -> {
                     loadingLayoutMF.visibility = View.GONE
                     recycleList.visibility = View.VISIBLE
                     adapter.setWeatherList(data.weatherData)

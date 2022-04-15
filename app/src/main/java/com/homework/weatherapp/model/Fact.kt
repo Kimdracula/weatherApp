@@ -52,5 +52,5 @@ data class Fact(
     @SerializedName("wind_gust")
     val windGust: Double,
     @SerializedName("wind_speed")
-    val windSpeed: Int
+    val windSpeed: Double
 )
