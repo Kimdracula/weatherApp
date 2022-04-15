@@ -10,7 +10,6 @@ class LoaderExceptions {
     private val serverMessage3: String = "Сработало перенаправление"
 
     fun check(code: Int): String? {
-
         if (code.equals(serverside)) {
             serverMessage1
         } else if (code.equals(clientside)) {

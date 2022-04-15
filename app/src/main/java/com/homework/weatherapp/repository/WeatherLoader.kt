@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.homework.weatherapp.model.WeatherDTO
 import com.homework.weatherapp.view_model.ResponseState
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -16,12 +17,14 @@ class WeatherLoader(private val wlResponse: WeatherLoaderResponse) {
 
 
     private var urlConnection: HttpURLConnection? = null
-   var responseCode by Delegates.notNull<Int>()
+private var responseCode:Int? = null
 
     fun loadWeather(lat: Double, lon: Double){
 Thread{
     try {
         val url = URL("https://api.weather.yandex.ru/v2/forecast?lat=$lat&lon=$lon&[lang=ru_RU]")
+       // val url = URL("http://212.86.114.27/v2/forecast?lat=$lat&lon=$lon")
+
         urlConnection = url.openConnection() as HttpURLConnection
         urlConnection?.apply {
             requestMethod = "GET"
@@ -31,8 +34,8 @@ Thread{
         }
         responseCode = urlConnection!!.responseCode
 
-    }catch (ex:Exception){
-        wlResponse.onError(ResponseState.Error(ex),responseCode)
+    }catch (ex: IOException){
+        responseCode?.let { wlResponse.onError(ResponseState.Error(ex), it) }
     }
     try {
         val reader = BufferedReader(InputStreamReader(urlConnection!!.inputStream))
@@ -42,7 +45,9 @@ Thread{
         }
         urlConnection!!.disconnect()
     }catch (numberFormatEx: NumberFormatException){
-wlResponse.onError(ResponseState.Error(numberFormatEx),responseCode)
+        responseCode?.let { wlResponse.onError(ResponseState.Error(numberFormatEx), it) }
+    }catch (ex:IOException){
+        responseCode?.let { wlResponse.onError(ResponseState.Error(ex), it) }
     }
 
 }.start()
