@@ -5,14 +5,20 @@
     android:id="@+id/mainView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
     android:orientation="vertical"
     tools:context=".view.details.DetailsFragment"
-    android:background="#252525"
-    android:clickable="false">
+    android:background="@color/black"
+    android:clickable="true"
+    android:focusable="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#252525">
 
     <LinearLayout
         android:id="@+id/infoLayout"
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -119,7 +125,7 @@
             tools:text="100 %" />
 
     </LinearLayout>
-
+    </FrameLayout>
     <FrameLayout
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
