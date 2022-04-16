@@ -1,19 +1,29 @@
 package com.homework.weatherapp.view.details
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
+import com.homework.weatherapp.model.WeatherDTO
+import com.homework.weatherapp.repository.LoaderExceptions
+import com.homework.weatherapp.repository.WeatherLoader
+import com.homework.weatherapp.repository.WeatherLoaderResponse
 import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.homework.weatherapp.view_model.ResponseState
 
 
-class DetailsFragment : Fragment() {
+class DetailsFragment : Fragment(), WeatherLoaderResponse {
+
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,20 +51,32 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
+
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderData(weather: Weather) {
+        WeatherLoader(this).loadWeather(weather.city.lat, weather.city.lon)
+        binding.cityName.text = weather.city.name
+        binding.coordinates.text =
+            "Широта: ${weather.city.lat},\nДолгота: ${weather.city.lon}"
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun displayWeather(weatherDTO: WeatherDTO) {
         with(binding) {
-            weather.also {
-                infoLayout.visibility = View.VISIBLE
-                loadingLayout.visibility = View.GONE
-                cityName.text = it.city.name
-                coordinates.text =
-                    "Широта: ${it.city.lat} Долгота: ${it.city.lon}"
-                temperature.text = it.temperature.toString()
-                feelsLike.text = it.fellsLike.toString()
-            }
+            infoLayout.visibility = View.VISIBLE
+            loadingLayout.visibility = View.GONE
+            temperature.text = weatherDTO.factDTO.temp.toString()
+            feelsLike.text = weatherDTO.factDTO.feelsLike.toString()
+            condition.text = weatherDTO.factDTO.condition
+            humidity.text = "${weatherDTO.factDTO.humidity} %"
         }
+    }
+
+    override fun onError(error: ResponseState, responseCode: Int) {
+       Snackbar.make(binding.root, LoaderExceptions().check(responseCode), Snackbar.LENGTH_LONG).show()
+        Log.d("!!!", "$error Код ошибки: $responseCode ")
     }
 }
 
