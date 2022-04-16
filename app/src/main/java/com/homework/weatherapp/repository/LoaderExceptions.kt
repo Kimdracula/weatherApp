@@ -9,12 +9,11 @@ class LoaderExceptions {
     private val serverMessage2: String = "Ошибка на стороне клиента"
     private val serverMessage3: String = "Сработало перенаправление"
 
-    fun check(code: Int): String? {
-        when (code){
+    fun check(code: Int)  =
+        when (code) {
             in serverside -> serverMessage3
             in clientside -> serverMessage2
             in redirection -> serverMessage1
+            else -> {"Что то пошло не так"}
         }
-        return null
     }
-}

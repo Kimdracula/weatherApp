@@ -59,7 +59,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
         WeatherLoader(this).loadWeather(weather.city.lat, weather.city.lon)
         binding.cityName.text = weather.city.name
         binding.coordinates.text =
-            "Широта: ${weather.city.lat} Долгота: ${weather.city.lon}"
+            "Широта: ${weather.city.lat},\nДолгота: ${weather.city.lon}"
     }
 
     @SuppressLint("SetTextI18n")
@@ -75,8 +75,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     }
 
     override fun onError(error: ResponseState, responseCode: Int) {
-        LoaderExceptions().check(responseCode)
-            ?.let { Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show() }
+       Snackbar.make(binding.root, LoaderExceptions().check(responseCode), Snackbar.LENGTH_LONG).show()
         Log.d("!!!", "$error Код ошибки: $responseCode ")
     }
 }
