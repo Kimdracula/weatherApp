@@ -51,6 +51,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -76,7 +77,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     override fun onError(error: ResponseState, responseCode: Int) {
         LoaderExceptions().check(responseCode)
             ?.let { Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show() }
-        Log.d("@@@", "$error Код ошибки: $responseCode ")
+        Log.d("!!!", "$error Код ошибки: $responseCode ")
     }
 }
 

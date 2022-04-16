@@ -3,6 +3,7 @@ package com.homework.weatherapp.repository
 import android.os.Handler
 import android.os.Looper
 import com.google.gson.Gson
+import com.homework.weatherapp.BuildConfig
 import com.homework.weatherapp.model.WeatherDTO
 import com.homework.weatherapp.view_model.ResponseState
 import java.io.BufferedReader
@@ -29,7 +30,7 @@ Thread{
             requestMethod = "GET"
             readTimeout = 10000
             connectTimeout = 10000
-            addRequestProperty("X-Yandex-API-Key", "c01aa6be-24ed-4bfe-8cd0-d4290e5837a0")
+            addRequestProperty("X-Yandex-API-Key", BuildConfig.WEATHER_API_KEY)
         }
         responseCode = urlConnection!!.responseCode
 
