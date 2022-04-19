@@ -42,7 +42,7 @@ class WeatherLoader(private val wlResponse: WeatherLoaderResponse) {
                 val reader = BufferedReader(InputStreamReader(urlConnection!!.inputStream))
                 val weatherDTO: WeatherDTO = Gson().fromJson(reader, WeatherDTO::class.java)
                 Handler(Looper.getMainLooper()).post {
-                    wlResponse.displayWeather(weatherDTO)
+                    //wlResponse.displayWeather(weatherDTO)
                 }
                 urlConnection!!.disconnect()
             } catch (numberFormatEx: NumberFormatException) {

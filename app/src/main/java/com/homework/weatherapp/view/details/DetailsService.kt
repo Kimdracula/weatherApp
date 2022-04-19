@@ -2,6 +2,7 @@ package com.homework.weatherapp.view.details
 
 import android.app.IntentService
 import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.homework.weatherapp.BuildConfig
 import com.homework.weatherapp.model.WeatherDTO
@@ -25,8 +26,8 @@ class DetailsService : IntentService("DetailsService") {
             try {
             val lat = intent.getDoubleExtra(KEY_INTENT_LAT, 0.00)
             val lon = intent.getDoubleExtra(KEY_INTENT_LON, 0.00)
-            // val url = URL("https://api.weather.yandex.ru/v2/informers?lat=$lat&lon=$lon&[lang=ru_RU]")
-            val url = URL("http://212.86.114.27/v2/informers?lat=$lat&lon=$lon")
+            val url = URL("https://api.weather.yandex.ru/v2/informers?lat=$lat&lon=$lon&[lang=ru_RU]")
+           // val url = URL("https://212.86.114.27/v2/informers?lat=$lat&lon=$lon")
 
 
             urlConnection = url.openConnection() as HttpURLConnection
@@ -46,10 +47,11 @@ class DetailsService : IntentService("DetailsService") {
         try {
             val reader = BufferedReader(InputStreamReader(urlConnection!!.inputStream))
             val weatherDTO: WeatherDTO = Gson().fromJson(reader, WeatherDTO::class.java)
+
             val message = Intent(KEY_BROADCAST_INTENT)
             message.putExtra(KEY_BROADCAST_MESSAGE,weatherDTO)
-            sendBroadcast(message)
-
+            LocalBroadcastManager.getInstance(this).sendBroadcast(message)
+urlConnection!!.disconnect()
         } catch (numberFormatEx: NumberFormatException) {
             responseCode?.let { wlResponse?.onError(ResponseState.Error(numberFormatEx), it) }
         } catch (IOex: IOException) {

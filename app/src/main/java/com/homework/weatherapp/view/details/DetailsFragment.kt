@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
@@ -53,7 +54,9 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().registerReceiver(serviceResponse, IntentFilter(KEY_BROADCAST_INTENT))
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(serviceResponse,
+            IntentFilter(KEY_BROADCAST_INTENT)
+        )
         renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
 
     }
@@ -75,7 +78,9 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
         override fun onReceive(p0: Context?, p1: Intent?) {
             p1?.let {
               val loadedWeather = it.getParcelableExtra<WeatherDTO>(KEY_BROADCAST_MESSAGE)
-
+                if (loadedWeather != null) {
+                    displayWeather(loadedWeather)
+                }
             }
         }
 
