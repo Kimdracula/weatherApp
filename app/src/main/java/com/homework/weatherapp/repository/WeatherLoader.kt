@@ -21,7 +21,7 @@ class WeatherLoader(private val wlResponse: WeatherLoaderResponse) {
     fun loadWeather(lat: Double, lon: Double) {
         Thread {
             try {
-                // val url = URL("https://api.weather.yandex.ru/v2/forecast?lat=$lat&lon=$lon&[lang=ru_RU]")
+              // val url = URL("https://api.weather.yandex.ru/v2/informers?lat=$lat&lon=$lon&[lang=ru_RU]")
                 val url = URL("http://212.86.114.27/v2/informers?lat=$lat&lon=$lon")
 
                 urlConnection = url.openConnection() as HttpURLConnection

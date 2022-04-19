@@ -1,8 +1,11 @@
 package com.homework.weatherapp.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class FactDTO(
 
     @SerializedName("cloudness")
@@ -53,4 +56,4 @@ data class FactDTO(
     val windGust: Double,
     @SerializedName("wind_speed")
     val windSpeed: Double
-)
+):Parcelable

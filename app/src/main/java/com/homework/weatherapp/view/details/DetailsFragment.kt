@@ -1,6 +1,10 @@
 package com.homework.weatherapp.view.details
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,9 +16,8 @@ import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.model.WeatherDTO
 import com.homework.weatherapp.repository.LoaderExceptions
-import com.homework.weatherapp.repository.WeatherLoader
 import com.homework.weatherapp.repository.WeatherLoaderResponse
-import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.homework.weatherapp.utils.*
 import com.homework.weatherapp.view_model.ResponseState
 
 
@@ -50,16 +53,32 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().registerReceiver(serviceResponse, IntentFilter(KEY_BROADCAST_INTENT))
         renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
 
     }
 
     @SuppressLint("SetTextI18n")
     private fun renderData(weather: Weather) {
-        WeatherLoader(this).loadWeather(weather.city.lat, weather.city.lon)
+
+        requireActivity().startService(Intent(requireContext(),DetailsService::class.java).apply {
+           putExtra(KEY_INTENT_LAT,weather.city.lat)
+            putExtra(KEY_INTENT_LON,weather.city.lon)
+        })
+
         binding.cityName.text = weather.city.name
         binding.coordinates.text =
             "Широта: ${weather.city.lat},\nДолгота: ${weather.city.lon}"
+    }
+
+    private val serviceResponse = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            p1?.let {
+              val loadedWeather = it.getParcelableExtra<WeatherDTO>(KEY_BROADCAST_MESSAGE)
+
+            }
+        }
+
     }
 
     @SuppressLint("SetTextI18n")
