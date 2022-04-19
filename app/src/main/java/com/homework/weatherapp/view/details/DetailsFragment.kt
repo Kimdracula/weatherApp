@@ -41,6 +41,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(serviceResponse)
     }
 
     companion object {
@@ -79,7 +80,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
             p1?.let {
               val loadedWeather = it.getParcelableExtra<WeatherDTO>(KEY_BROADCAST_MESSAGE)
                 if (loadedWeather != null) {
-                    displayWeather(loadedWeather)
+                    onResponse(loadedWeather)
                 }
             }
         }
@@ -87,7 +88,7 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun displayWeather(weatherDTO: WeatherDTO) {
+    override fun onResponse(weatherDTO: WeatherDTO) {
         with(binding) {
             infoLayout.visibility = View.VISIBLE
             loadingLayout.visibility = View.GONE

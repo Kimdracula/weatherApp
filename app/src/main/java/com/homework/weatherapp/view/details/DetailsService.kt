@@ -14,11 +14,12 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 class DetailsService : IntentService("DetailsService") {
 
     private var wlResponse:WeatherLoaderResponse? = null
-    private var urlConnection: HttpURLConnection? = null
+    private var urlConnection: HttpsURLConnection? = null
     private var responseCode: Int? = null
 
     override fun onHandleIntent(p0: Intent?) {
@@ -30,7 +31,7 @@ class DetailsService : IntentService("DetailsService") {
            // val url = URL("https://212.86.114.27/v2/informers?lat=$lat&lon=$lon")
 
 
-            urlConnection = url.openConnection() as HttpURLConnection
+            urlConnection = url.openConnection() as HttpsURLConnection
             urlConnection?.apply {
                 requestMethod = "GET"
                 readTimeout = 10000
@@ -65,6 +66,4 @@ urlConnection!!.disconnect()
 
 
     }
-
-
 }

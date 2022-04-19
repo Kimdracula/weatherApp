@@ -5,6 +5,6 @@ import com.homework.weatherapp.view_model.ResponseState
 
 interface WeatherLoaderResponse {
 
-    fun displayWeather(weatherDTO: WeatherDTO)
+    fun onResponse(weatherDTO: WeatherDTO)
     fun onError(error: ResponseState, responseCode: Int)
 }
