@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, MainFragment.newInstance()).commit()
         }
         registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-
     }
 
     override fun onDestroy() {

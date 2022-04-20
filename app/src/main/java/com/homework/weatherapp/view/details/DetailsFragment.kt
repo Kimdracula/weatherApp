@@ -24,7 +24,6 @@ import com.homework.weatherapp.view_model.ResponseState
 
 class DetailsFragment : Fragment(), WeatherLoaderResponse {
 
-
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -36,7 +35,6 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -55,7 +53,8 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(serviceResponse,
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            serviceResponse,
             IntentFilter(KEY_BROADCAST_INTENT)
         )
         renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
@@ -65,9 +64,9 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     @SuppressLint("SetTextI18n")
     private fun renderData(weather: Weather) {
 
-        requireActivity().startService(Intent(requireContext(),DetailsService::class.java).apply {
-           putExtra(KEY_INTENT_LAT,weather.city.lat)
-            putExtra(KEY_INTENT_LON,weather.city.lon)
+        requireActivity().startService(Intent(requireContext(), DetailsService::class.java).apply {
+            putExtra(KEY_INTENT_LAT, weather.city.lat)
+            putExtra(KEY_INTENT_LON, weather.city.lon)
         })
 
         binding.cityName.text = weather.city.name
@@ -78,13 +77,12 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     private val serviceResponse = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             p1?.let {
-              val loadedWeather = it.getParcelableExtra<WeatherDTO>(KEY_BROADCAST_MESSAGE)
+                val loadedWeather = it.getParcelableExtra<WeatherDTO>(KEY_BROADCAST_MESSAGE)
                 if (loadedWeather != null) {
                     onResponse(loadedWeather)
                 }
             }
         }
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -100,7 +98,8 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
     }
 
     override fun onError(error: ResponseState, responseCode: Int) {
-       Snackbar.make(binding.root, LoaderExceptions().check(responseCode), Snackbar.LENGTH_LONG).show()
+        Snackbar.make(binding.root, LoaderExceptions().check(responseCode), Snackbar.LENGTH_LONG)
+            .show()
         Log.d("!!!", "$error Код ошибки: $responseCode ")
     }
 }
