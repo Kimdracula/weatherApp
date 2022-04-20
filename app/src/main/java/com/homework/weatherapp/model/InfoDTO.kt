@@ -1,8 +1,11 @@
 package com.homework.weatherapp.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class InfoDTO(
     @SerializedName("def_pressure_mm")
     val defPressureMm: Int,
@@ -34,4 +37,4 @@ data class InfoDTO(
     val url: String,
     @SerializedName("zoom")
     val zoom: Int
-)
+):Parcelable
