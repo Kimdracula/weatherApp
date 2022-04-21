@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +16,10 @@ import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.model.WeatherDTO
 import com.homework.weatherapp.repository.LoaderExceptions
-import com.homework.weatherapp.repository.WeatherLoaderResponse
 import com.homework.weatherapp.utils.*
-import com.homework.weatherapp.view_model.ResponseState
 
 
-class DetailsFragment : Fragment(), WeatherLoaderResponse {
+class DetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
@@ -81,26 +78,34 @@ class DetailsFragment : Fragment(), WeatherLoaderResponse {
                 if (loadedWeather != null) {
                     onResponse(loadedWeather)
                 }
+
+                val errorCode = it.getIntExtra(KEY_BROADCAST_ERROR_MESSAGE, 0)
+                if (errorCode != null) {
+                    showErrorSnack(errorCode)
+                }
+
             }
         }
-    }
 
-    @SuppressLint("SetTextI18n")
-    override fun onResponse(weatherDTO: WeatherDTO) {
-        with(binding) {
-            infoLayout.visibility = View.VISIBLE
-            loadingLayout.visibility = View.GONE
-            temperature.text = weatherDTO.factDTO.temp.toString()
-            feelsLike.text = weatherDTO.factDTO.feelsLike.toString()
-            condition.text = weatherDTO.factDTO.condition
-            humidity.text = "${weatherDTO.factDTO.humidity} %"
+        @SuppressLint("SetTextI18n")
+        fun onResponse(weatherDTO: WeatherDTO) {
+            with(binding) {
+                infoLayout.visibility = View.VISIBLE
+                loadingLayout.visibility = View.GONE
+                temperature.text = weatherDTO.factDTO.temp.toString()
+                feelsLike.text = weatherDTO.factDTO.feelsLike.toString()
+                condition.text = weatherDTO.factDTO.condition
+                humidity.text = "${weatherDTO.factDTO.humidity} %"
+            }
         }
-    }
 
-    override fun onError(error: ResponseState, responseCode: Int) {
-        Snackbar.make(binding.root, LoaderExceptions().check(responseCode), Snackbar.LENGTH_LONG)
-            .show()
-        Log.d("!!!", "$error Код ошибки: $responseCode ")
+        fun showErrorSnack(responseCode: Int) {
+            Snackbar.make(
+                binding.root,
+                LoaderExceptions().check(responseCode),
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
     }
 }
 
