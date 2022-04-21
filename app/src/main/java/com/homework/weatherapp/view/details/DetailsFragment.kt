@@ -77,13 +77,10 @@ class DetailsFragment : Fragment() {
                 val loadedWeather = it.getParcelableExtra<WeatherDTO>(KEY_BROADCAST_MESSAGE)
                 if (loadedWeather != null) {
                     onResponse(loadedWeather)
-                }
-
-                val errorCode = it.getIntExtra(KEY_BROADCAST_ERROR_MESSAGE, 0)
-                if (errorCode != null) {
+                } else {
+                    val errorCode = it.getIntExtra(KEY_BROADCAST_ERROR_MESSAGE, 0)
                     showErrorSnack(errorCode)
                 }
-
             }
         }
 
