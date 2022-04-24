@@ -23,3 +23,4 @@ fun convertDtoToModel(weatherDTO: WeatherDTO): Weather {
     val fact: FactDTO = weatherDTO.factDTO
     return (Weather(getDefaultCity(), fact.temp, fact.feelsLike,fact.icon))
 }
+

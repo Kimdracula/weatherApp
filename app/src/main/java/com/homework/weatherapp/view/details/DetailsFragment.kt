@@ -1,12 +1,15 @@
 package com.homework.weatherapp.view.details
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
@@ -50,17 +53,15 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getLiveDataDetails().observe(viewLifecycleOwner, object : Observer<DetailsState> {
-            override fun onChanged(d: DetailsState) {
-                renderData(d)
-            }
-        })
+        viewModel.getLiveDataDetails().observe(viewLifecycleOwner
+        ) { d -> renderData(d) }
         arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
             viewModel.getWeather(it.city)
         }
     }
 
-    private fun renderData(detailsState: DetailsState) {
+  @SuppressLint("SetTextI18n")
+  private  fun renderData(detailsState: DetailsState) {
         when (detailsState) {
             is DetailsState.Error -> {
 
@@ -79,9 +80,27 @@ class DetailsFragment : Fragment() {
                     feelsLike.text = weather.fellsLike.toString()
                     condition.text = weather.condition
                     humidity.text = weather.humidity.toString()
+                    loadSvg("https://yastatic.net/weather/i/icons/blueye/color/svg/${weather.icon}.svg")
                 }
             }
         }
+
+    }
+
+   private fun loadSvg(url: String) {
+        val imageLoader = ImageLoader.Builder(requireContext())
+            .components {
+                add(SvgDecoder.Factory())
+            }
+            .crossfade(true)
+            .build()
+        val request = ImageRequest.Builder(requireContext())
+            .data(url)
+            .crossfade(true)
+            .target(binding.weatherIcon)
+            .build()
+        imageLoader.enqueue(request)
+    }
 
         fun showErrorSnack(responseCode: Int) {
             Snackbar.make(
@@ -90,7 +109,8 @@ class DetailsFragment : Fragment() {
                 Snackbar.LENGTH_LONG
             ).show()
         }
-    }
+
+
 }
 
 
