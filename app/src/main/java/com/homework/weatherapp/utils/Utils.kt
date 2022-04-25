@@ -8,10 +8,16 @@ import com.homework.weatherapp.model.getDefaultCity
 const val KEY_BUNDLE_WEATHER = "key"
 const val SCHEME = "https:"
 const val AUTHORITY = "api.weather.yandex.ru"
+const val AUTHORITY_ICON = "yastatic.net"
+const val END_POINT_ICON = "weather/i/icons/blueye/color/svg"
+const val FORMAT_ICON = "svg"
 const val END_POINT = "v2/informers?"
 const val QUERY_LAT = "lat"
 const val QUERY_LON = "lon"
-const val WEATHER_API_LOGIN = "X-Yandex-API-Key"
+const val WEATHER_API_KEY = "X-Yandex-API-Key"
+const val SERVER_ERROR = "Сервер не отвечает"
+const val CORRUPTED_DATA = "Неполные данные"
+const val MESSAGE_ERROR = "Что то пошло не так"
 
 
 

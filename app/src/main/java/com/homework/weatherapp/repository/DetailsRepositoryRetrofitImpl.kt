@@ -4,9 +4,7 @@ import com.google.gson.GsonBuilder
 import com.homework.weatherapp.BuildConfig
 import com.homework.weatherapp.model.City
 import com.homework.weatherapp.model.WeatherDTO
-import com.homework.weatherapp.utils.AUTHORITY
-import com.homework.weatherapp.utils.SCHEME
-import com.homework.weatherapp.utils.convertDtoToModel
+import com.homework.weatherapp.utils.*
 import com.homework.weatherapp.view_model.DetailsViewModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,11 +29,11 @@ class DetailsRepositoryRetrofitImpl : DetailsRepository {
                             myCallback.onResponse(weather)
                         }
                     } else {
-                        myCallback.onFail()
+                        myCallback.onFail(Throwable(MESSAGE_ERROR))
                     }
                 }
                 override fun onFailure(call: Call<WeatherDTO>, t: Throwable) {
-                    myCallback.onFail()
+                    myCallback.onFail(Throwable(MESSAGE_ERROR))
                 }
             })
     }

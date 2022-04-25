@@ -7,14 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import coil.ImageLoader
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
-import com.homework.weatherapp.repository.LoaderExceptions
-import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.homework.weatherapp.utils.*
 import com.homework.weatherapp.view_model.DetailsState
 import com.homework.weatherapp.view_model.DetailsViewModel
 
@@ -53,20 +48,31 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getLiveDataDetails().observe(viewLifecycleOwner
-        ) { d -> renderData(d) }
+        viewModel.getLiveDataDetails().observe(
+            viewLifecycleOwner
+        ) { renderData(it) }
         arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
             viewModel.getWeather(it.city)
         }
     }
 
-  @SuppressLint("SetTextI18n")
-  private  fun renderData(detailsState: DetailsState) {
+    @SuppressLint("SetTextI18n")
+    private fun renderData(detailsState: DetailsState) {
         when (detailsState) {
             is DetailsState.Error -> {
+                with(binding) {
+                    infoLayout.visibility = View.GONE
+                    loadingLayout.visibility = View.GONE
+                    mainView.showErrorSnack(Throwable(CORRUPTED_DATA))
+                }
+
 
             }
             DetailsState.Loading -> {
+                with(binding) {
+                    infoLayout.visibility = View.GONE
+                    loadingLayout.visibility = View.VISIBLE
+                }
 
             }
             is DetailsState.Success -> {
@@ -80,37 +86,15 @@ class DetailsFragment : Fragment() {
                     feelsLike.text = weather.fellsLike.toString()
                     condition.text = weather.condition
                     humidity.text = weather.humidity.toString()
-                    loadSvg("https://yastatic.net/weather/i/icons/blueye/color/svg/${weather.icon}.svg")
+                    loadSvg(
+                        requireContext(),
+                        "$SCHEME//$AUTHORITY_ICON/$END_POINT_ICON/${weather.icon}.$FORMAT_ICON",
+                        weatherIcon
+                    )
                 }
             }
         }
-
     }
-
-   private fun loadSvg(url: String) {
-        val imageLoader = ImageLoader.Builder(requireContext())
-            .components {
-                add(SvgDecoder.Factory())
-            }
-            .crossfade(true)
-            .build()
-        val request = ImageRequest.Builder(requireContext())
-            .data(url)
-            .crossfade(true)
-            .target(binding.weatherIcon)
-            .build()
-        imageLoader.enqueue(request)
-    }
-
-        fun showErrorSnack(responseCode: Int) {
-            Snackbar.make(
-                binding.root,
-                LoaderExceptions().check(responseCode),
-                Snackbar.LENGTH_LONG
-            ).show()
-        }
-
-
 }
 
 
