@@ -35,6 +35,15 @@
             android:textStyle="bold"
             tools:text="Санкт Петербург" />
 
+
+        <ImageView
+            android:id="@+id/weatherIcon"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerInside">
+        </ImageView>
+
         <TextView
             android:id="@+id/coordinatesHeader"
             android:layout_width="wrap_content"

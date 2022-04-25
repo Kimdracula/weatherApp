@@ -1,28 +1,27 @@
 package com.homework.weatherapp.view.details
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.android.material.snackbar.Snackbar
+import androidx.lifecycle.ViewModelProvider
+import coil.load
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
-import com.homework.weatherapp.model.WeatherDTO
-import com.homework.weatherapp.repository.LoaderExceptions
 import com.homework.weatherapp.utils.*
+import com.homework.weatherapp.view_model.DetailsState
+import com.homework.weatherapp.view_model.DetailsViewModel
 
 
 class DetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: DetailsViewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
+    }
 
 
     override fun onCreateView(
@@ -36,7 +35,7 @@ class DetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(serviceResponse)
+
     }
 
     companion object {
@@ -50,60 +49,54 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
-            serviceResponse,
-            IntentFilter(KEY_BROADCAST_INTENT)
-        )
-        renderData(requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!)
-
+        viewModel.getLiveDataDetails().observe(
+            viewLifecycleOwner
+        ) { renderData(it) }
+        arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
+            viewModel.getWeather(it.city)
+        }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun renderData(weather: Weather) {
+    private fun renderData(detailsState: DetailsState) {
+        when (detailsState) {
+            is DetailsState.Error -> {
+                with(binding) {
+                    infoLayout.visibility = View.GONE
+                    loadingLayout.visibility = View.GONE
+                    mainView.showErrorSnack(Throwable(NO_DATA))
+                }
 
-        requireActivity().startService(Intent(requireContext(), DetailsService::class.java).apply {
-            putExtra(KEY_INTENT_LAT, weather.city.lat)
-            putExtra(KEY_INTENT_LON, weather.city.lon)
-        })
 
-        binding.cityName.text = weather.city.name
-        binding.coordinates.text =
-            "Широта: ${weather.city.lat},\nДолгота: ${weather.city.lon}"
-    }
+            }
+            DetailsState.Loading -> {
+                with(binding) {
+                    infoLayout.visibility = View.GONE
+                    loadingLayout.visibility = View.VISIBLE
+                }
 
-    private val serviceResponse = object : BroadcastReceiver() {
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            p1?.let {
-                val loadedWeather = it.getParcelableExtra<WeatherDTO>(KEY_BROADCAST_MESSAGE)
-                if (loadedWeather != null) {
-                    onResponse(loadedWeather)
-                } else {
-                    val errorCode = it.getIntExtra(KEY_BROADCAST_ERROR_MESSAGE, 0)
-                    showErrorSnack(errorCode)
+            }
+            is DetailsState.Success -> {
+                val weather = detailsState.weather
+                with(binding) {
+                    infoLayout.visibility = View.VISIBLE
+                    loadingLayout.visibility = View.GONE
+                    cityName.text = weather.city.name
+                    coordinates.text = "Широта: ${weather.city.lat}\nДолгота: ${weather.city.lon}"
+                    temperature.text = weather.temperature.toString()
+                    feelsLike.text = weather.fellsLike.toString()
+                    condition.text = weather.condition
+                    humidity.text = weather.humidity.toString()
+                    loadSvg(
+                        requireContext(),
+                        "$SCHEME//$AUTHORITY_ICON/$END_POINT_ICON/${weather.icon}.$FORMAT_ICON",
+                        weatherIcon
+                    )
                 }
             }
         }
-
-        @SuppressLint("SetTextI18n")
-        fun onResponse(weatherDTO: WeatherDTO) {
-            with(binding) {
-                infoLayout.visibility = View.VISIBLE
-                loadingLayout.visibility = View.GONE
-                temperature.text = weatherDTO.factDTO.temp.toString()
-                feelsLike.text = weatherDTO.factDTO.feelsLike.toString()
-                condition.text = weatherDTO.factDTO.condition
-                humidity.text = "${weatherDTO.factDTO.humidity} %"
-            }
-        }
-
-        fun showErrorSnack(responseCode: Int) {
-            Snackbar.make(
-                binding.root,
-                LoaderExceptions().check(responseCode),
-                Snackbar.LENGTH_LONG
-            ).show()
-        }
     }
 }
+
 
 
