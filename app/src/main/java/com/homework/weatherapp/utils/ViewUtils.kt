@@ -12,10 +12,9 @@ fun View.showErrorSnack(throwable: Throwable) {
     Snackbar.make(
         this,
         throwable.toString(),
-        Snackbar.LENGTH_LONG
+        Snackbar.LENGTH_INDEFINITE
     ).show()
 }
-
 
 fun loadSvg(context: Context, url: String, imageView: ImageView) {
     val imageLoader = ImageLoader.Builder(context)

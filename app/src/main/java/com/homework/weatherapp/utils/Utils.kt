@@ -16,7 +16,7 @@ const val QUERY_LAT = "lat"
 const val QUERY_LON = "lon"
 const val WEATHER_API_KEY = "X-Yandex-API-Key"
 const val SERVER_ERROR = "Сервер не отвечает"
-const val CORRUPTED_DATA = "Неполные данные"
+const val NO_DATA = "Ошибка подключения"
 const val MESSAGE_ERROR = "Что то пошло не так"
 
 

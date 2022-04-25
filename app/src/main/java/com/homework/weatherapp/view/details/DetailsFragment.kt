@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import coil.load
 import com.homework.weatherapp.databinding.FragmentDetailsBinding
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.utils.*
@@ -63,7 +64,7 @@ class DetailsFragment : Fragment() {
                 with(binding) {
                     infoLayout.visibility = View.GONE
                     loadingLayout.visibility = View.GONE
-                    mainView.showErrorSnack(Throwable(CORRUPTED_DATA))
+                    mainView.showErrorSnack(Throwable(NO_DATA))
                 }
 
 
