@@ -18,6 +18,7 @@ const val WEATHER_API_KEY = "X-Yandex-API-Key"
 const val SERVER_ERROR = "Сервер не отвечает"
 const val NO_DATA = "Ошибка подключения"
 const val MESSAGE_ERROR = "Что то пошло не так"
+const val SHARED_PREF_KEY = "prefKey"
 
 
 

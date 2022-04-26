@@ -1,5 +1,7 @@
 package com.homework.weatherapp.view.main
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import com.homework.weatherapp.R
 import com.homework.weatherapp.databinding.FragmentMainBinding
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.homework.weatherapp.utils.SHARED_PREF_KEY
 import com.homework.weatherapp.view.details.DetailsFragment
 import com.homework.weatherapp.view_model.MainViewModel
 import com.homework.weatherapp.view_model.ResponseState
@@ -42,35 +45,60 @@ class MainFragment : Fragment(), OnItemListClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         val observer = Observer<ResponseState> { it.let { renderData(it) } }
         initViews(observer)
+       val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)?: return
+        if (sharedPref.getBoolean(SHARED_PREF_KEY,true)){
+            getRussia()
+     }
+        else {getWorld()
+        }
         initDecorator()
-        viewModel.getWeatherRussia()
+
     }
 
+    private fun getRussia(){
+        viewModel.getWeatherRussia()
+        binding.floatingActionButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.russia_ic))
+    }
+
+    private fun getWorld(){
+        viewModel.getWeatherWorld()
+        binding.floatingActionButton.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.earth_ic
+            )
+        )
+    }
+
+
     private fun initViews(observer: Observer<ResponseState>) {
+
         with(binding) {
             with(viewModel) {
                 recycleList.adapter = adapter
                 getData().observe(viewLifecycleOwner, observer)
                 floatingActionButton.setOnClickListener {
+                    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
                     isRussian = !isRussian
                     if (isRussian) {
-                        getWeatherRussia()
-                        floatingActionButton.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.russia_ic
-                            )
-                        )
+                        if (sharedPref != null) {
+                            with(sharedPref.edit())
+                            { putBoolean(SHARED_PREF_KEY,true)
+                            apply()}
+                        }
+                       getRussia()
                     } else {
-                        floatingActionButton.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.earth_ic
-                            )
-                        )
-                        getWeatherWorld()
+                        getWorld()
+                        with(sharedPref!!.edit())
+                        {putBoolean("SHARED_PREF_KEY",false)
+                        apply()}
                     }
                 }
             }
