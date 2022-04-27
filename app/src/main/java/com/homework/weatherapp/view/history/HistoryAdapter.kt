@@ -13,7 +13,6 @@ class HistoryAdapter(
     fun setData(newData: List<Weather>) {
         this.data = newData
         notifyDataSetChanged()
-        TODO("DIFFUTIL")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

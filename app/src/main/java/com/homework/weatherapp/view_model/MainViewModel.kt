@@ -21,7 +21,7 @@ class MainViewModel(
                 postValue(MainState.Loading)
                 val answer = if (!isRussian) repository.getWorldWeatherByLocal()
                 else repository.getRussianWeatherByLocal()
-                postValue(MainState.SuccessLocal(answer))
+                postValue(MainState.Success(answer))
             }
         }.start()
     }
