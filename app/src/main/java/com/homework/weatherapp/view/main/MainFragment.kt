@@ -88,16 +88,17 @@ class MainFragment : Fragment(), OnItemListClickListener {
                     val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
                     isRussian = !isRussian
                     if (isRussian) {
+                        getRussia()
                         if (sharedPref != null) {
                             with(sharedPref.edit())
                             { putBoolean(SHARED_PREF_KEY,true)
                             apply()}
                         }
-                       getRussia()
+
                     } else {
                         getWorld()
                         with(sharedPref!!.edit())
-                        {putBoolean("SHARED_PREF_KEY",false)
+                        {putBoolean(SHARED_PREF_KEY,false)
                         apply()}
                     }
                 }
