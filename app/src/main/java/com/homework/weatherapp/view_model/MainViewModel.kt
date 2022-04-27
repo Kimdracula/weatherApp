@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.homework.weatherapp.repository.RepositoryImpl
 
 class MainViewModel(
-    private val liveData: MutableLiveData<ResponseState> = MutableLiveData(),
+    private val liveData: MutableLiveData<MainState> = MutableLiveData(),
     private val repository: RepositoryImpl = RepositoryImpl()
 ) : ViewModel() {
 
-    fun getData(): LiveData<ResponseState> = liveData
+    fun getData(): LiveData<MainState> = liveData
 
     fun getWeatherRussia() = getWeather(true)
     fun getWeatherWorld() = getWeather(false)
@@ -18,10 +18,10 @@ class MainViewModel(
     private fun getWeather(isRussian: Boolean) {
         Thread {
             liveData.run {
-                postValue(ResponseState.Loading)
+                postValue(MainState.Loading)
                 val answer = if (!isRussian) repository.getWorldWeatherByLocal()
                 else repository.getRussianWeatherByLocal()
-                postValue(ResponseState.SuccessLocal(answer))
+                postValue(MainState.SuccessLocal(answer))
             }
         }.start()
     }
