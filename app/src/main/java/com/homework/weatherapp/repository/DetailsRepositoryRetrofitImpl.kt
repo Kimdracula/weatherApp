@@ -12,6 +12,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
 class DetailsRepositoryRetrofitImpl : DetailsRepository {
     override fun getWeatherDetails(city: City, myCallback: DetailsViewModel.Callback) {
         val weatherApi = Retrofit.Builder().apply {

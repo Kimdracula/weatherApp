@@ -8,7 +8,8 @@ import com.homework.weatherapp.utils.convertWeatherToEntity
 import com.homework.weatherapp.view_model.DetailsViewModel
 import com.homework.weatherapp.view_model.HistoryViewModel
 
-class DetailsRepositoryRoomImpl: DetailsRepositoryRoomOne,DetailsRepositoryRoomAll,DetailsRepositoryRoomAdd {
+class DetailsRepositoryRoomImpl: DetailsRepositoryRoomOne,DetailsRepositoryRoomAll,DetailsRepositoryRoomAdd,
+    DetailsRepository {
     override fun addWeather(weather: Weather) {
         App.getHistoryDAO().insert(convertWeatherToEntity(weather))
     }
