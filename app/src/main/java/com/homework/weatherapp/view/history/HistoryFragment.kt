@@ -52,15 +52,18 @@ class HistoryFragment: Fragment() {
     private fun renderData(data: MainState) {
         when (data) {
             is MainState.Error -> {
-                //binding.loadingLayout.visibility = View.GONE
+                binding.recycleListHistory.visibility = View.GONE
+                binding.loadingLayoutHistory.visibility = View.GONE
                 Snackbar.make(binding.root, "Не получилось ${data.error}", Snackbar.LENGTH_LONG)
                     .show()
             }
             is MainState.Loading -> {
-                //binding.loadingLayout.visibility = View.VISIBLE
+                binding.recycleListHistory.visibility = View.GONE
+                binding.loadingLayoutHistory.visibility = View.VISIBLE
             }
             is MainState.Success -> {
-                //binding.loadingLayout.visibility = View.GONE
+                binding.recycleListHistory.visibility = View.VISIBLE
+                binding.loadingLayoutHistory.visibility = View.GONE
                 adapter.setData(data.weatherData)
             }
         }
