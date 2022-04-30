@@ -1,7 +1,6 @@
 package com.homework.weatherapp.domain.room
 
 import androidx.room.*
-import java.util.*
 
 @Dao
 interface HistoryDAO {

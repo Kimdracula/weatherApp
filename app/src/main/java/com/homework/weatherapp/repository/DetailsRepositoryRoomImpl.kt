@@ -3,6 +3,7 @@ package com.homework.weatherapp.repository
 import com.homework.weatherapp.App
 import com.homework.weatherapp.model.City
 import com.homework.weatherapp.model.Weather
+import com.homework.weatherapp.utils.EMPTY_LIST_ERROR
 import com.homework.weatherapp.utils.convertHistoryEntityToWeather
 import com.homework.weatherapp.utils.convertWeatherToEntity
 import com.homework.weatherapp.view_model.DetailsViewModel
@@ -18,12 +19,12 @@ class DetailsRepositoryRoomImpl: DetailsRepositoryRoomOne,DetailsRepositoryRoomA
         callback.onResponse(convertHistoryEntityToWeather(App.getHistoryDAO().getAll()))
     }
 
-    override fun getWeatherDetails(city: City, callback: DetailsViewModel.Callback) {
+    override fun getWeatherDetails(city: City, myCallback: DetailsViewModel.Callback) {
         val list =convertHistoryEntityToWeather(App.getHistoryDAO().getHistoryForCity(city.name))
         if(list.isEmpty()){
-            callback.onFail(Throwable("Список пуст"))
+            myCallback.onFail(Throwable(EMPTY_LIST_ERROR))
         }else{
-            callback.onResponse(list.last()) // FIXME hack
+            myCallback.onResponse(list.last()) // FIXME hack
         }
     }
 }

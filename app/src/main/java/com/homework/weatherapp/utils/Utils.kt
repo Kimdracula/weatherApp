@@ -17,6 +17,7 @@ const val SERVER_ERROR = "Сервер не отвечает"
 const val NO_DATA = "Ошибка подключения"
 const val MESSAGE_ERROR = "Что то пошло не так"
 const val SHARED_PREF_KEY = "prefKey"
+const val EMPTY_LIST_ERROR = "Список пуст"
 
 
 

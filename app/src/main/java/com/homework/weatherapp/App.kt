@@ -3,7 +3,7 @@ package com.homework.weatherapp
 import android.app.Application
 import androidx.room.Room
 import com.homework.weatherapp.domain.room.HistoryDAO
-import com.homework.weatherapp.domain.room.HistoryDB
+import com.homework.weatherapp.domain.room.Database
 
 class App : Application() {
 
@@ -15,13 +15,13 @@ class App : Application() {
 
     companion object {
         private var appContext: App? = null
-        private var db: HistoryDB? = null
+        private var db: Database? = null
         fun getHistoryDAO(): HistoryDAO {
             if (db == null) {
                 db = appContext?.let {
                     Room.databaseBuilder(
                         it,
-                        HistoryDB::class.java, "database-history"
+                        Database::class.java, "database-history"
                     )
                         .allowMainThreadQueries()
                         .build()
