@@ -14,7 +14,7 @@ import com.homework.weatherapp.databinding.FragmentHistoryBinding
 import com.homework.weatherapp.view_model.HistoryViewModel
 import com.homework.weatherapp.view_model.MainState
 
-class HistoryFragment: Fragment() {
+class HistoryFragment : Fragment() {
 
     private var _binding: FragmentHistoryBinding? = null
     private val binding get() = _binding!!
@@ -37,16 +37,20 @@ class HistoryFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recycleListHistory.also {// TODO HW вынесты в initRecycler()
-            it.adapter = adapter
-            it.layoutManager = LinearLayoutManager(requireContext())
-        }
-        val observer = {data: MainState -> renderData(data)}
+        initRecycler()
+        val observer = { data: MainState -> renderData(data) }
         viewModel.getData().observe(viewLifecycleOwner, observer)
         viewModel.getAll()
 
         initDecorator()
 
+    }
+
+    private fun initRecycler() {
+        binding.recycleListHistory.also {
+            it.adapter = adapter
+            it.layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     private fun renderData(data: MainState) {

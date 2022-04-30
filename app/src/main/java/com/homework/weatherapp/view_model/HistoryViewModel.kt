@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.repository.DetailsRepositoryRoomImpl
+import com.homework.weatherapp.utils.MESSAGE_ERROR
 
 class HistoryViewModel(
     private val liveData: MutableLiveData<MainState> = MutableLiveData(),
@@ -15,14 +16,14 @@ class HistoryViewModel(
         return liveData
     }
 
-    fun getAll(){
-        repository.getAllWeatherDetails(object :CallbackForAll{
+    fun getAll() {
+        repository.getAllWeatherDetails(object : CallbackForAll {
             override fun onResponse(listWeather: List<Weather>) {
                 liveData.postValue(MainState.Success(listWeather))
             }
 
             override fun onFail() {
-                TODO("Not yet implemented")
+                liveData.postValue(MainState.Error(Throwable(MESSAGE_ERROR)))
             }
 
         })
@@ -30,7 +31,6 @@ class HistoryViewModel(
 
     interface CallbackForAll {
         fun onResponse(listWeather: List<Weather>)
-        // TODO HW Fail
         fun onFail()
     }
 }

@@ -27,7 +27,7 @@ class App : Application() {
                         .build()
                 }
             }
-return db!!.historyDAO()
+            return db!!.historyDAO()
 
         }
     }

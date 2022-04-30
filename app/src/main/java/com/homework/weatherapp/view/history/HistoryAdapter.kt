@@ -2,6 +2,7 @@ package com.homework.weatherapp.view.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.homework.weatherapp.databinding.HistoryRecycleItemBinding
 import com.homework.weatherapp.model.Weather
@@ -12,8 +13,10 @@ class HistoryAdapter(
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     fun setData(newData: List<Weather>) {
-        this.data = newData
-        notifyDataSetChanged()
+        val diffUtil = HistoryDiffCallBack(data, newData)
+        val diffResults = DiffUtil.calculateDiff(diffUtil)
+        data = newData
+        diffResults.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +26,7 @@ class HistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder, position: Int) {
-        holder.bind(holder,data[position])
+        holder.bind(holder, data[position])
     }
 
     override fun getItemCount(): Int = data.size
@@ -38,9 +41,11 @@ class HistoryAdapter(
                 tvFeelsLike.append(weather.fellsLike.toString())
                 tvCondition.append(weather.condition)
                 tvHumidity.append(weather.humidity.toString())
-                loadSvg(holder.itemView.context,
+                loadSvg(
+                    holder.itemView.context,
                     "$SCHEME//$AUTHORITY_ICON/$END_POINT_ICON/${weather.icon}.$FORMAT_ICON",
-                    imageView)
+                    imageView
+                )
             }
         }
     }
