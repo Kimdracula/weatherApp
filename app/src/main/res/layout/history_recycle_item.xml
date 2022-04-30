@@ -1,34 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView  xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="@dimen/card_elevation">
 
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="140dp"
+        android:layout_marginTop="@dimen/margin_top_recycle_item"
+        android:layout_marginBottom="@dimen/margin_bottom_recycle_item"
+        android:minHeight="@dimen/card_min_height"
+        android:paddingStart="@dimen/padding_start_recycle_item"
+        android:paddingEnd="@dimen/padding_end_recycle_item"
+        android:paddingVertical="@dimen/padding_vertical_recycle_item"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
+
+        <TextView
             android:id="@+id/tvCityName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="25sp" />
+            android:layout_width="@dimen/recycle_item_header_width"
+            android:layout_height="@dimen/recycle_item_header_height"
+            tools:text="Мухосранск"
+            android:textColor="@color/material_on_background_emphasis_high_type"
+            android:textSize="@dimen/text_size_header_recycle_item"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/tvTemperature"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvTemperature"
-            android:paddingStart="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="25sp" />
+            android:layout_width="@dimen/recycle_item_header_width"
+            android:layout_height="@dimen/recycle_item_description_height"
+            android:paddingTop="25dp"
+            android:text="@string/temperature_header"
+            android:textColor="@color/material_on_surface_emphasis_medium"
+            android:textSize="@dimen/text_size_description_recycle_item"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvFeelsLike"
-            android:paddingStart="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25sp" />
-    </LinearLayout>
+            android:paddingTop="45dp"
+            android:text="@string/feels_like_header"
+            android:textColor="@color/material_on_surface_emphasis_medium"
+            android:textSize="@dimen/text_size_description_recycle_item"
+            app:layout_constraintStart_toStartOf="@+id/tvTemperature"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tvCondition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="65dp"
+            android:text="@string/condition_header"
+            android:textColor="@color/material_on_surface_emphasis_medium"
+            android:textSize="@dimen/text_size_description_recycle_item"
+            app:layout_constraintStart_toStartOf="@+id/tvTemperature"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tvHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="85dp"
+            android:text="@string/humidity_header"
+            android:textColor="@color/material_on_surface_emphasis_medium"
+            android:textSize="@dimen/text_size_description_recycle_item"
+            app:layout_constraintStart_toStartOf="@+id/tvTemperature"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/recycle_item_image_size"
+            android:layout_height="@dimen/recycle_item_image_size"
+            android:layout_marginEnd="@dimen/recycle_item_image_margin_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="centerInside">
+        </ImageView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

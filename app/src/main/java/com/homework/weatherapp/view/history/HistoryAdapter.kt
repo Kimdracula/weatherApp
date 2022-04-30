@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.homework.weatherapp.databinding.HistoryRecycleItemBinding
 import com.homework.weatherapp.model.Weather
+import com.homework.weatherapp.utils.*
 
 class HistoryAdapter(
     private var data: List<Weather> = listOf()
@@ -22,7 +23,7 @@ class HistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(holder,data[position])
     }
 
     override fun getItemCount(): Int = data.size
@@ -30,11 +31,16 @@ class HistoryAdapter(
 
     inner class ViewHolder(private val binding: HistoryRecycleItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(weather: Weather) {
+        fun bind(holder: ViewHolder, weather: Weather) {
             with(binding) {
                 tvCityName.text = weather.city.name
-                tvTemperature.text = weather.temperature.toString()
-                tvFeelsLike.text = weather.fellsLike.toString()
+                tvTemperature.append(weather.temperature.toString())
+                tvFeelsLike.append(weather.fellsLike.toString())
+                tvCondition.append(weather.condition)
+                tvHumidity.append(weather.humidity.toString())
+                loadSvg(holder.itemView.context,
+                    "$SCHEME//$AUTHORITY_ICON/$END_POINT_ICON/${weather.icon}.$FORMAT_ICON",
+                    imageView)
             }
         }
     }

@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="coordinates">Координаты:</string>
-    <string name="temperature_header">Температура:</string>
-    <string name="feels_like_header">Температура ощущается как:</string>
+    <string name="coordinates">Координаты: </string>
+    <string name="temperature_header">Температура: </string>
+    <string name="feels_like_header">Температура ощущается как: </string>
     <string name="snack_text">Не получилось загрузить данные…</string>
     <string name="snack_action_text">Ещё раз?</string>
-    <string name="humidity_header">Влажность воздуха:</string>
-    <string name="condition_header">Состояние погоды:</string>
+    <string name="humidity_header">Влажность: </string>
+    <string name="condition_header">Состояние погоды: </string>
 
 </resources>
