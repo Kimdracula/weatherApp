@@ -1,9 +1,7 @@
 package com.homework.weatherapp.utils
 
-import com.homework.weatherapp.model.FactDTO
-import com.homework.weatherapp.model.Weather
-import com.homework.weatherapp.model.WeatherDTO
-import com.homework.weatherapp.model.getDefaultCity
+import com.homework.weatherapp.domain.room.HistoryEntity
+import com.homework.weatherapp.model.*
 
 const val KEY_BUNDLE_WEATHER = "key"
 const val SCHEME = "https:"
@@ -18,6 +16,8 @@ const val WEATHER_API_KEY = "X-Yandex-API-Key"
 const val SERVER_ERROR = "Сервер не отвечает"
 const val NO_DATA = "Ошибка подключения"
 const val MESSAGE_ERROR = "Что то пошло не так"
+const val SHARED_PREF_KEY = "prefKey"
+const val EMPTY_LIST_ERROR = "Список пуст"
 
 
 
@@ -26,3 +26,13 @@ fun convertDtoToModel(weatherDTO: WeatherDTO): Weather {
     return (Weather(getDefaultCity(), fact.temp, fact.feelsLike, fact.condition, fact.humidity,fact.icon))
 }
 
+fun convertHistoryEntityToWeather(entityList: List<HistoryEntity>): List<Weather> {
+    return entityList.map {
+        Weather(City(it.city, 0.0, 0.0), it.temperature, it.fellsLike, it.condition,it.humidity, it.icon)
+    }
+}
+
+fun convertWeatherToEntity(weather: Weather): HistoryEntity {
+    return HistoryEntity( weather.city.name,weather.city.lat,weather.city.lon, weather.temperature,weather.fellsLike,
+        weather.condition,weather.humidity,System.currentTimeMillis(), weather.icon)
+}
