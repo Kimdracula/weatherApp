@@ -23,7 +23,9 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, MainFragment.newInstance()).commit()
         }
         registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        Thread{
         App.getHistoryDAO().getAll()
+        }.start()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

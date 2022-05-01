@@ -12,19 +12,26 @@ import com.homework.weatherapp.view_model.HistoryViewModel
 class DetailsRepositoryRoomImpl: DetailsRepositoryRoomOne,DetailsRepositoryRoomAll,DetailsRepositoryRoomAdd,
     DetailsRepository {
     override fun addWeather(weather: Weather) {
+        Thread{
         App.getHistoryDAO().insert(convertWeatherToEntity(weather))
+        }.start()
     }
 
     override fun getAllWeatherDetails(callback: HistoryViewModel.CallbackForAll) {
+        Thread{
         callback.onResponse(convertHistoryEntityToWeather(App.getHistoryDAO().getAll()))
+        }.start()
     }
 
     override fun getWeatherDetails(city: City, myCallback: DetailsViewModel.Callback) {
-        val list =convertHistoryEntityToWeather(App.getHistoryDAO().getHistoryForCity(city.name))
-        if(list.isEmpty()){
-            myCallback.onFail(Throwable(EMPTY_LIST_ERROR))
-        }else{
-            myCallback.onResponse(list.last()) // FIXME hack
-        }
+        Thread {
+            val list =
+                convertHistoryEntityToWeather(App.getHistoryDAO().getHistoryForCity(city.name))
+            if (list.isEmpty()) {
+                myCallback.onFail(Throwable(EMPTY_LIST_ERROR))
+            } else {
+                myCallback.onResponse(list.last()) // FIXME hack
+            }
+        }.start()
     }
 }
