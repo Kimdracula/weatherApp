@@ -2,6 +2,8 @@ package com.homework.weatherapp.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDate
+import java.util.*
 
 
 @Parcelize
