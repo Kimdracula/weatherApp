@@ -8,5 +8,7 @@
     <string name="snack_action_text">Ещё раз?</string>
     <string name="humidity_header">Влажность: </string>
     <string name="condition_header">Состояние погоды: </string>
+    <string name="history_menu_title">history</string>
+    <string name="provider_menu_title">provider</string>
 
 </resources>

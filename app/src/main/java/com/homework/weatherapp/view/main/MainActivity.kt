@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.homework.broadcast.SystemBroadCastReceiver
+import com.homework.lesson_9.ContentProviderFragment
 import com.homework.weatherapp.App
 import com.homework.weatherapp.R
 import com.homework.weatherapp.view.history.HistoryFragment
@@ -38,6 +39,10 @@ class MainActivity : AppCompatActivity() {
             R.id.action_history->{
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, HistoryFragment.newInstance()).addToBackStack("").commit()
+            }
+            R.id.action_provider->{
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ContentProviderFragment.newInstance()).addToBackStack("").commit()
             }
         }
         return super.onOptionsItemSelected(item)

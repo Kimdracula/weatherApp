@@ -4,6 +4,12 @@
 
     <item
         android:id="@+id/action_history"
-        android:title="history"
+        android:title="@string/history_menu_title"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_provider"
+        android:title="@string/provider_menu_title"
+        app:showAsAction="ifRoom" />
+
+
 </menu>
