@@ -1,11 +1,17 @@
 package com.homework.lesson_9
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.homework.weatherapp.databinding.FragmentContentProviderBinding
@@ -35,10 +41,10 @@ class ContentProviderFragment : Fragment() {
         when {
             ContextCompat.checkSelfPermission(
                 requireContext(),
-                android.Manifest.permission.READ_CONTACTS
+                Manifest.permission.READ_CONTACTS
             ) == PackageManager.PERMISSION_GRANTED -> getContacts()
 
-            shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS) -> showExplanation()
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) -> showExplanation()
 
             else -> askPermission()
         }
@@ -47,16 +53,74 @@ class ContentProviderFragment : Fragment() {
     }
 
     private fun askPermission() {
-        TODO("Not yet implemented")
+        requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), REQUEST_CODE)
     }
 
 
     private fun showExplanation() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Доступ к контактам")
+            .setMessage("Требуется доступ к контактам, в случае отказа в доступе приложение не будет работать")
+            .setPositiveButton("Да, разрешаю") { _, _ ->
+                askPermission()
+            }
+            .setNegativeButton("Нет") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_CODE) {
+            for (i in permissions.indices) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    getContacts()
+                } else showExplanation()
+            }
+        } else return
 
     }
 
+    @SuppressLint("Range")
     private fun getContacts() {
-        TODO("Not yet implemented")
+        val contentResolver = requireContext().contentResolver
+        val cursor = contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            null,
+            null,
+            ContactsContract.Contacts.DISPLAY_NAME + " ASC"
+        )
+
+        cursor?.let {
+            while (cursor.moveToNext()) {
+                val name =
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                val phone =
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                addTextView(name, phone)
+            }
+        }
+        cursor?.close()
+    }
+
+    private fun addTextView(name: String, phone: String) {
+        binding.containerForContacts.addView(TextView(requireContext()).apply {
+            text = "Имя: $name\nТелефон: $phone\n"
+            textSize = 25f
+            isClickable = true
+           setOnClickListener {
+
+               activity?.let{
+                   it.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(phone)))
+               }
+           }
+        })
     }
 
 
