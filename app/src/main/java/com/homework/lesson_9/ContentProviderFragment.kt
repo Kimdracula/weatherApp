@@ -111,18 +111,18 @@ class ContentProviderFragment : Fragment() {
 
     private fun addTextView(name: String, phone: String) {
         binding.containerForContacts.addView(TextView(requireContext()).apply {
-            text = "Имя: $name\nТелефон: $phone\n"
+            text = "Имя: $name\n\"Телефон: $phone\n"
             textSize = 25f
             isClickable = true
            setOnClickListener {
 
                activity?.let{
-                   it.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(phone)))
+                   val dial = "tel:$phone"
+                   it.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
                }
            }
         })
     }
-
 
     companion object {
         @JvmStatic
