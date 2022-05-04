@@ -174,7 +174,7 @@ class ContentProviderFragment : Fragment() {
     private fun dialNumber(phone: String) {
         activity?.let {
             val dial = "tel:$phone"
-            it.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
+            it.startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
         }
     }
 
