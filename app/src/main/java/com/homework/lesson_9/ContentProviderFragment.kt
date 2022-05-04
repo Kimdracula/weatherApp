@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.homework.weatherapp.R
 import com.homework.weatherapp.databinding.FragmentContentProviderBinding
 
 
@@ -33,38 +34,68 @@ class ContentProviderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkPermission()
+        checkPermissionContacts()
 
     }
 
-    private fun checkPermission() {
+    private fun checkPermissionContacts() {
         when {
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.READ_CONTACTS
             ) == PackageManager.PERMISSION_GRANTED -> getContacts()
 
-            shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) -> showExplanation()
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)
+            -> showExplanation(
+                getString(R.string.contacts_access),
+                getString(R.string.contacts_access_message),
+                Manifest.permission.READ_CONTACTS, REQUEST_READ_CONTACTS
+            )
 
-            else -> askPermission()
+            else -> askPermission(Manifest.permission.READ_CONTACTS, REQUEST_READ_CONTACTS)
         }
 
 
     }
 
-    private fun askPermission() {
-        requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), REQUEST_CODE)
+    private fun checkPermissionCall(phone: String) {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CALL_PHONE
+            ) == PackageManager.PERMISSION_GRANTED -> dialNumber(phone)
+
+            shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE) -> showExplanation(
+                getString(R.string.call_access),
+                getString(R.string.call_message_text),
+                Manifest.permission.CALL_PHONE, REQUEST_CALL_CONTACTS
+            )
+            else -> askPermission(Manifest.permission.CALL_PHONE, REQUEST_CALL_CONTACTS)
+        }
     }
 
 
-    private fun showExplanation() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Доступ к контактам")
-            .setMessage("Требуется доступ к контактам, в случае отказа в доступе приложение не будет работать")
-            .setPositiveButton("Да, разрешаю") { _, _ ->
-                askPermission()
+    private fun askPermission(permissionType: String, codeRequest: Int) {
+        requestPermissions(arrayOf(permissionType), codeRequest)
+    }
+
+
+    private fun showExplanation(
+        titleText: String,
+        messageText: String,
+        permissionType: String,
+        codeRequest: Int
+    ) {
+        AlertDialog.Builder(
+            requireContext(),
+            R.style.Theme_MaterialComponents_DayNight_Dialog_Alert
+        )
+            .setTitle(titleText)
+            .setMessage(messageText)
+            .setPositiveButton(getString(R.string.yes_alert_button)) { _, _ ->
+                askPermission(permissionType, codeRequest)
             }
-            .setNegativeButton("Нет") { dialogInterface, _ ->
+            .setNegativeButton(getString(R.string.no_alert_button)) { dialogInterface, _ ->
                 dialogInterface.dismiss()
             }
             .create()
@@ -76,14 +107,32 @@ class ContentProviderFragment : Fragment() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_CODE) {
-            for (i in permissions.indices) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    getContacts()
-                } else showExplanation()
-            }
-        } else return
+        when (requestCode) {
 
+            REQUEST_READ_CONTACTS -> {
+                for (i in permissions.indices) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        getContacts()
+                    } else showExplanation(
+                        getString(R.string.contacts_access),
+                        getString(R.string.contacts_access_message),
+                        Manifest.permission.READ_CONTACTS, REQUEST_READ_CONTACTS
+                    )
+                }
+            }
+            REQUEST_CALL_CONTACTS -> {
+                for (i in permissions.indices) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        /*"Тут нужно бы вызвать dialNumber(но параметр <phone> тут наверное не передать */
+
+                    } else showExplanation(
+                        getString(R.string.call_access),
+                        getString(R.string.call_message_text),
+                        Manifest.permission.CALL_PHONE, REQUEST_CALL_CONTACTS
+                    )
+                }
+            }
+        }
     }
 
     @SuppressLint("Range")
@@ -109,19 +158,24 @@ class ContentProviderFragment : Fragment() {
         cursor?.close()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun addTextView(name: String, phone: String) {
         binding.containerForContacts.addView(TextView(requireContext()).apply {
             text = "Имя: $name\n\"Телефон: $phone\n"
             textSize = 25f
             isClickable = true
-           setOnClickListener {
+            setOnClickListener {
 
-               activity?.let{
-                   val dial = "tel:$phone"
-                   it.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
-               }
-           }
+                checkPermissionCall(phone)
+            }
         })
+    }
+
+    private fun dialNumber(phone: String) {
+        activity?.let {
+            val dial = "tel:$phone"
+            it.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
+        }
     }
 
     companion object {
@@ -134,6 +188,4 @@ class ContentProviderFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

@@ -10,5 +10,13 @@
     <string name="condition_header">Состояние погоды: </string>
     <string name="history_menu_title">history</string>
     <string name="provider_menu_title">provider</string>
+    <string name="call_access">Доступ к звонкам</string>
+    <string name="call_message_text">Требуется доступ к звонкам, в случае отказа в доступе приложение не будет работать</string>
+    <string name="contacts_access">Доступ к контактам</string>
+    <string name="contacts_access_message">Требуется доступ к контактам, в случае отказа в доступе приложение не будет работать</string>
+    <string name="yes_alert_button">Да, разрешаю</string>
+    <string name="no_alert_button">Нет</string>
+    <string name="name_title">Имя:</string>
+    <string name="phone_title">Телефон:</string>
 
 </resources>
