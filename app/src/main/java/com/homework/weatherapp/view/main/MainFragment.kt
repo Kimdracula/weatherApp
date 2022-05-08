@@ -60,7 +60,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
 
     private fun getRussia(){
         viewModel.getWeatherRussia()
-        binding.floatingActionButton.setImageDrawable(
+        binding.fabRegion.setImageDrawable(
             ContextCompat.getDrawable(
                 requireContext(),
                 R.drawable.russia_ic))
@@ -68,7 +68,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
 
     private fun getWorld(){
         viewModel.getWeatherWorld()
-        binding.floatingActionButton.setImageDrawable(
+        binding.fabRegion.setImageDrawable(
             ContextCompat.getDrawable(
                 requireContext(),
                 R.drawable.earth_ic
@@ -83,7 +83,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
             with(viewModel) {
                 recycleList.adapter = adapter
                 getData().observe(viewLifecycleOwner, observer)
-                floatingActionButton.setOnClickListener {
+                fabRegion.setOnClickListener {
                     val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
                     isRussian = !isRussian
                     if (isRussian) {
