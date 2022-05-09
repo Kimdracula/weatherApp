@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,12 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.homework.weatherapp.R
 import com.homework.weatherapp.databinding.FragmentMainBinding
+import com.homework.weatherapp.model.City
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
 import com.homework.weatherapp.utils.SHARED_PREF_KEY
 import com.homework.weatherapp.view.details.DetailsFragment
-import com.homework.weatherapp.view_model.MainViewModel
 import com.homework.weatherapp.view_model.MainState
+import com.homework.weatherapp.view_model.MainViewModel
+import java.io.IOException
 
 
 class MainFragment : Fragment(), OnItemListClickListener {
@@ -169,6 +172,10 @@ class MainFragment : Fragment(), OnItemListClickListener {
     }
 
     override fun onItemClick(weather: Weather) {
+       goToDetailsFragment(weather)
+    }
+
+    private fun goToDetailsFragment(weather: Weather){
         requireActivity().supportFragmentManager.beginTransaction().add(
             R.id.fragment_container,
             DetailsFragment.newInstance(Bundle().apply {
@@ -184,7 +191,8 @@ class MainFragment : Fragment(), OnItemListClickListener {
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
-                Toast.makeText(requireContext(), "Погнали", Toast.LENGTH_LONG).show()
+                getLocation()
+                Toast.makeText(requireContext(), "Погнали 1", Toast.LENGTH_LONG).show()
             }
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 showAlertDialog(
@@ -207,8 +215,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
     ) {
 
         AlertDialog.Builder(
-            requireContext(),
-            R.style.Theme_MaterialComponents_DayNight_Dialog_Alert
+            requireContext()
         )
             .setTitle(titleText)
             .setMessage(messageText)
@@ -224,12 +231,14 @@ class MainFragment : Fragment(), OnItemListClickListener {
             .show()
     }
 
+
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                Toast.makeText(requireContext(), "Погнали", Toast.LENGTH_LONG).show()
+                getLocation()
+                Toast.makeText(requireContext(), "Погнали 2", Toast.LENGTH_LONG).show()
             } else {
                 showAlertDialog(
                     "Доступ к GPS", "В случае отказа доступа к GPS, " +
@@ -237,5 +246,82 @@ class MainFragment : Fragment(), OnItemListClickListener {
                 )
             }
         }
+
+    private fun getLocation() {
+        Thread {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+
+                val locationManager =
+                    requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                val criteria = Criteria()
+                criteria.accuracy = Criteria.ACCURACY_FINE
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    val provider = locationManager.getBestProvider(criteria, true)
+
+                    requireActivity().runOnUiThread{
+                    provider?.let {
+                        locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            30000L,
+                            10f,
+                            onLocationListener
+                        )
+                    }}
+                } else {
+                    val location =
+                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    if (location == null) {
+                        showAlertDialog(
+                            "GPS отключен",
+                            "Будет использовано последнее известное местоположение"
+                        )
+                    } else (
+
+                            getNewLocation(location)
+                            )
+
+                }
+            } else requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }.start()
+    }
+
+    private val onLocationListener = LocationListener {
+        getNewLocation(it)
+    }
+
+    override fun getNewLocation(it: Location) {
+        val geoCoder = Geocoder(requireContext())
+        Thread {
+            try {
+                val addresses = geoCoder.getFromLocation(it.latitude, it.longitude, 1)
+requireActivity().runOnUiThread{
+    showAddressDialog(addresses[0].getAddressLine(0),it)
+}
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }.start()
+    }
+
+    private fun showAddressDialog(address: String, location: Location) {
+        AlertDialog.Builder(
+            requireContext()
+        )
+            .setTitle("Адрес указан верно?")
+            .setMessage(address)
+            .setPositiveButton("Да") { _, _ ->
+                goToDetailsFragment(Weather(City(address,location.latitude,location.longitude)))
+            }
+            .setNegativeButton(getString(R.string.no_alert_button)) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .create()
+            .show()
+    }
 }
 
