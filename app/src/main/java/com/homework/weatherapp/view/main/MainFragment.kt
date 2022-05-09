@@ -1,10 +1,15 @@
 package com.homework.weatherapp.view.main
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -48,25 +53,27 @@ class MainFragment : Fragment(), OnItemListClickListener {
 
         val observer = Observer<MainState> { it.let { renderData(it) } }
         initViews(observer)
-       val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)?: return
-        if (sharedPref.getBoolean(SHARED_PREF_KEY,true)){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        if (sharedPref.getBoolean(SHARED_PREF_KEY, true)) {
             getRussia()
-     }
-        else {getWorld()
+        } else {
+            getWorld()
         }
         initDecorator()
 
     }
 
-    private fun getRussia(){
+    private fun getRussia() {
         viewModel.getWeatherRussia()
         binding.fabRegion.setImageDrawable(
             ContextCompat.getDrawable(
                 requireContext(),
-                R.drawable.russia_ic))
+                R.drawable.russia_ic
+            )
+        )
     }
 
-    private fun getWorld(){
+    private fun getWorld() {
         viewModel.getWeatherWorld()
         binding.fabRegion.setImageDrawable(
             ContextCompat.getDrawable(
@@ -90,17 +97,25 @@ class MainFragment : Fragment(), OnItemListClickListener {
                         getRussia()
                         if (sharedPref != null) {
                             with(sharedPref.edit())
-                            { putBoolean(SHARED_PREF_KEY,true)
-                            apply()}
+                            {
+                                putBoolean(SHARED_PREF_KEY, true)
+                                apply()
+                            }
                         }
 
                     } else {
                         getWorld()
                         with(sharedPref!!.edit())
-                        {putBoolean(SHARED_PREF_KEY,false)
-                        apply()}
+                        {
+                            putBoolean(SHARED_PREF_KEY, false)
+                            apply()
+                        }
                     }
                 }
+                fabLocation.setOnClickListener {
+                    permissionCheck()
+                }
+
             }
         }
     }
@@ -162,5 +177,65 @@ class MainFragment : Fragment(), OnItemListClickListener {
         )
             .addToBackStack("").commit()
     }
+
+    override fun permissionCheck() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Toast.makeText(requireContext(), "Погнали", Toast.LENGTH_LONG).show()
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                showAlertDialog(
+                    "Доступ к GPS",
+                    "Для правильной работы приложения требуется доступ к GPS"
+                )
+            }
+            else -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
+        }
+    }
+
+
+    override fun showAlertDialog(
+        titleText: String,
+        messageText: String
+    ) {
+
+        AlertDialog.Builder(
+            requireContext(),
+            R.style.Theme_MaterialComponents_DayNight_Dialog_Alert
+        )
+            .setTitle(titleText)
+            .setMessage(messageText)
+            .setPositiveButton(getString(R.string.yes_alert_button)) { _, _ ->
+                requestPermissionLauncher.launch(
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
+            .setNegativeButton(getString(R.string.no_alert_button)) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(requireContext(), "Погнали", Toast.LENGTH_LONG).show()
+            } else {
+                showAlertDialog(
+                    "Доступ к GPS", "В случае отказа доступа к GPS, " +
+                            "приложение будет работать некорректно"
+                )
+            }
+        }
 }
 

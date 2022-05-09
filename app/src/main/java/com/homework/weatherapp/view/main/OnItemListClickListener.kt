@@ -4,4 +4,7 @@ import com.homework.weatherapp.model.Weather
 
 interface OnItemListClickListener {
     fun onItemClick(weather: Weather)
+    fun permissionCheck()
+    fun showAlertDialog(titleText: String,
+                        messageText: String)
 }
