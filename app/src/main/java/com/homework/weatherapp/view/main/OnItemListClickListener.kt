@@ -9,5 +9,5 @@ interface OnItemListClickListener {
     fun showAlertDialog(titleText: String,
                         messageText: String)
 
-    fun getNewLocation(it: Location)
+    fun getOldLocation(it: Location)
 }

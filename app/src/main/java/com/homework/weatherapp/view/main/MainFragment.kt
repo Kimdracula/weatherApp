@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -192,21 +191,16 @@ class MainFragment : Fragment(), OnItemListClickListener {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
                 getLocation()
-                Toast.makeText(requireContext(), "FINE", Toast.LENGTH_LONG).show()
             }
 
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 showAlertDialog(
-                    "Доступ к сетевому подключению",
-                    "Для приблизительного определения местоположения требуется доступ к сети"
+                    getString(R.string.GPS_accsess),
+                    getString(R.string.GPS_explanation)
                 )
             }
-
-
             else -> {
-                locationPermissionRequest.launch(arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION))
+               runPermissionRequest()
             }
         }
     }
@@ -223,9 +217,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
             .setTitle(titleText)
             .setMessage(messageText)
             .setPositiveButton(getString(R.string.yes_alert_button)) { _, _ ->
-                locationPermissionRequest.launch(arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION))
+                runPermissionRequest()
             }
             .setNegativeButton(getString(R.string.no_alert_button)) { dialogInterface, _ ->
                 dialogInterface.dismiss()
@@ -245,70 +237,71 @@ class MainFragment : Fragment(), OnItemListClickListener {
               getLocation()
            } else -> {
            showAlertDialog(
-               "Доступ к GPS", "В случае отказа доступа к GPS, " +
-                       "приложение будет работать некорректно"
+               getString(R.string.GEO_accsess), getString(R.string.GEO_explanation)
            )
        }
        }
    }
 
     private fun getLocation() {
-        Thread{
 
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
-            ) {
+                || ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED  ) {
 
                 val locationManager =
                     requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 val criteria = Criteria()
                 criteria.accuracy = Criteria.ACCURACY_FINE
                 val provider = locationManager.getBestProvider(criteria, true)
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)||
+                    locationManager.isProviderEnabled(LocationManager.FUSED_PROVIDER
+                        )) {
 
-                    requireActivity().runOnUiThread { provider?.let {
+                   provider?.let {
                         locationManager.requestLocationUpdates(
                             provider,
-                            0,
+                            10000,
                             100f,
                             onLocationListener
                         )
-                    }  }
+                    }
 
                 } else {
-                    Toast.makeText(requireContext(), "GPS отключен", Toast.LENGTH_LONG).show()
                     val location =
                         provider?.let { locationManager.getLastKnownLocation(it) }
                     if (location == null) {
-                        showAlertDialog(
-                            "GPS отключен",
-                            "Будет использовано последнее известное местоположение"
-                        )
+                       showErrorSnackBar(getString(R.string.GEO_accsess_disabled))
                     } else {
-                        Toast.makeText(requireContext(), "Пробую найи новую локацию", Toast.LENGTH_LONG).show()
-                        getNewLocation(location)
+                        showErrorSnackBar(getString(R.string.last_location_shown))
+                        getOldLocation(location)
                     }
 
                 }
             } else {
-                locationPermissionRequest.launch(arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION))
+                runPermissionRequest()
             }
-            }
-            .start()
+    }
+
+    private fun runPermissionRequest(){
+        locationPermissionRequest.launch(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION))
     }
 
     private val onLocationListener = object :LocationListener {
         override fun onLocationChanged(p0: Location) {
-            getNewLocation(p0)
+            getOldLocation(p0)
         }
 
         override fun onProviderDisabled(provider: String) {
             super.onProviderDisabled(provider)
-            showErrorSnackBar("GPS отключен, возможны проблемы с геолокацией")
+            showErrorSnackBar(getString(R.string.GEO_disabled))
         }
 
         override fun onProviderEnabled(provider: String) {
@@ -317,7 +310,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
         }
     }
 
-    override fun getNewLocation(it: Location) {
+    override fun getOldLocation(it: Location) {
         val geoCoder = Geocoder(requireContext())
         Thread {
             try {
@@ -328,7 +321,7 @@ requireActivity().runOnUiThread{
 
             } catch (e: IOException) {
                 e.printStackTrace()
-                showErrorSnackBar("Похоже включён авиарежим!")
+                showErrorSnackBar(getString(R.string.smth_went_wrong))
             }
         }.start()
     }
@@ -337,9 +330,9 @@ requireActivity().runOnUiThread{
         AlertDialog.Builder(
             requireContext()
         )
-            .setTitle("Адрес указан верно?")
+            .setTitle(getString(R.string.adress_question))
             .setMessage(address)
-            .setPositiveButton("Да") { _, _ ->
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 goToDetailsFragment(Weather(City(address,location.latitude,location.longitude)))
             }
             .setNegativeButton(getString(R.string.no_alert_button)) { dialogInterface, _ ->
