@@ -54,7 +54,7 @@ class MainFragment : Fragment(), OnItemListClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val observer = Observer<MainState> { it.let { renderData(it) } }
+        val observer = Observer<MainState> { renderData(it) }
         initViews(observer)
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         if (sharedPref.getBoolean(SHARED_PREF_KEY, true)) {
@@ -192,18 +192,21 @@ class MainFragment : Fragment(), OnItemListClickListener {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
                 getLocation()
-                Toast.makeText(requireContext(), "Погнали 1", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "FINE", Toast.LENGTH_LONG).show()
             }
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
                 showAlertDialog(
-                    "Доступ к GPS",
-                    "Для правильной работы приложения требуется доступ к GPS"
+                    "Доступ к сетевому подключению",
+                    "Для приблизительного определения местоположения требуется доступ к сети"
                 )
             }
+
+
             else -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
+                locationPermissionRequest.launch(arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION))
             }
         }
     }
@@ -220,9 +223,9 @@ class MainFragment : Fragment(), OnItemListClickListener {
             .setTitle(titleText)
             .setMessage(messageText)
             .setPositiveButton(getString(R.string.yes_alert_button)) { _, _ ->
-                requestPermissionLauncher.launch(
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
+                locationPermissionRequest.launch(arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION))
             }
             .setNegativeButton(getString(R.string.no_alert_button)) { dialogInterface, _ ->
                 dialogInterface.dismiss()
@@ -231,24 +234,27 @@ class MainFragment : Fragment(), OnItemListClickListener {
             .show()
     }
 
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                getLocation()
-                Toast.makeText(requireContext(), "Погнали 2", Toast.LENGTH_LONG).show()
-            } else {
-                showAlertDialog(
-                    "Доступ к GPS", "В случае отказа доступа к GPS, " +
-                            "приложение будет работать некорректно"
-                )
-            }
-        }
+   private val locationPermissionRequest = registerForActivityResult(
+       ActivityResultContracts.RequestMultiplePermissions()
+   ) { permissions ->
+       when {
+           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+               getLocation()
+           }
+           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+              getLocation()
+           } else -> {
+           showAlertDialog(
+               "Доступ к GPS", "В случае отказа доступа к GPS, " +
+                       "приложение будет работать некорректно"
+           )
+       }
+       }
+   }
 
     private fun getLocation() {
-        Thread {
+        Thread{
+
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -259,38 +265,56 @@ class MainFragment : Fragment(), OnItemListClickListener {
                     requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 val criteria = Criteria()
                 criteria.accuracy = Criteria.ACCURACY_FINE
+                val provider = locationManager.getBestProvider(criteria, true)
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    val provider = locationManager.getBestProvider(criteria, true)
 
-                    requireActivity().runOnUiThread{
-                    provider?.let {
+                    requireActivity().runOnUiThread { provider?.let {
                         locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            30000L,
-                            10f,
+                            provider,
+                            0,
+                            100f,
                             onLocationListener
                         )
-                    }}
+                    }  }
+
                 } else {
+                    Toast.makeText(requireContext(), "GPS отключен", Toast.LENGTH_LONG).show()
                     val location =
-                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                        provider?.let { locationManager.getLastKnownLocation(it) }
                     if (location == null) {
                         showAlertDialog(
                             "GPS отключен",
                             "Будет использовано последнее известное местоположение"
                         )
-                    } else (
-
-                            getNewLocation(location)
-                            )
+                    } else {
+                        Toast.makeText(requireContext(), "Пробую найи новую локацию", Toast.LENGTH_LONG).show()
+                        getNewLocation(location)
+                    }
 
                 }
-            } else requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }.start()
+            } else {
+                locationPermissionRequest.launch(arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION))
+            }
+            }
+            .start()
     }
 
-    private val onLocationListener = LocationListener {
-        getNewLocation(it)
+    private val onLocationListener = object :LocationListener {
+        override fun onLocationChanged(p0: Location) {
+            getNewLocation(p0)
+        }
+
+        override fun onProviderDisabled(provider: String) {
+            super.onProviderDisabled(provider)
+            showErrorSnackBar("GPS отключен, возможны проблемы с геолокацией")
+        }
+
+        override fun onProviderEnabled(provider: String) {
+            super.onProviderEnabled(provider)
+            getLocation()
+        }
     }
 
     override fun getNewLocation(it: Location) {
@@ -304,6 +328,7 @@ requireActivity().runOnUiThread{
 
             } catch (e: IOException) {
                 e.printStackTrace()
+                showErrorSnackBar("Похоже включён авиарежим!")
             }
         }.start()
     }
@@ -323,5 +348,12 @@ requireActivity().runOnUiThread{
             .create()
             .show()
     }
+
+    private fun showErrorSnackBar(
+        textToDisplay: String,
+    ) {
+        Snackbar.make(binding.fragmentMain, textToDisplay, Snackbar.LENGTH_LONG).show()
+        }
+
 }
 
