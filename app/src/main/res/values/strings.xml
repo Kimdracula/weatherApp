@@ -28,5 +28,6 @@
     <string name="yes">Да</string>
     <string name="GEO_accsess_disabled">Доступ к геоданным отключен, последняя локация неизвестна</string>
     <string name="last_location_shown">Показана последняя известная локация. Включите GPS!</string>
+    <string name="maps">maps</string>
 
 </resources>

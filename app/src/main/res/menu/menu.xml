@@ -11,5 +11,9 @@
         android:title="@string/provider_menu_title"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_maps"
+        android:title="@string/maps"
+        app:showAsAction="ifRoom" />
 
 </menu>
