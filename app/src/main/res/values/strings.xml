@@ -18,5 +18,21 @@
     <string name="no_alert_button">Нет</string>
     <string name="name_title">Имя:</string>
     <string name="phone_title">Телефон:</string>
+    <string name="GPS_accsess">Доступ к GPS</string>
+    <string name="GPS_explanation">Для точного определения местоположения требуется доступ к GPS</string>
+    <string name="GEO_accsess">Доступ к геоданным</string>
+    <string name="GEO_explanation">В случае отказа доступа, приложение будет работать некорректно</string>
+    <string name="GEO_disabled">Геоданные отключены, возможны проблемы с геолокацией</string>
+    <string name="smth_went_wrong">Что то пошло не так</string>
+    <string name="adress_question">Адрес указан верно?</string>
+    <string name="yes">Да</string>
+    <string name="GEO_accsess_disabled">Доступ к геоданным отключен, последняя локация неизвестна</string>
+    <string name="last_location_shown">Показана последняя известная локация. Включите GPS!</string>
+    <string name="maps">maps</string>
+    <string name="enter_address">Введите адрес</string>
+    <string name="button_search_map">Поиск</string>
+    <string name="find_weather">Узнать погоду</string>
+    <string name="searchText_mistake">Ошибка ввода</string>
+    <string name="check_text">Проверьте правильность ввода!</string>
 
 </resources>

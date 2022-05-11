@@ -18,13 +18,26 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fabRegion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:layout_margin="20dp"
         android:layout_gravity="bottom|end"
         android:src="@drawable/russia_ic"
+        app:maxImageSize="56dp"
+        app:tint= "@null"
+        android:focusable="true" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginBottom="@dimen/fabLocation_margin_bottom"
+        android:layout_marginEnd="@dimen/fabLocation_margin_end"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_baseline_gps_fixed_24"
         app:maxImageSize="56dp"
         app:tint= "@null"
         android:focusable="true" />
