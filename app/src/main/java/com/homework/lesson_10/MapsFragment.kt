@@ -24,6 +24,8 @@ import com.homework.weatherapp.model.City
 import com.homework.weatherapp.model.Weather
 import com.homework.weatherapp.utils.KEY_BUNDLE_WEATHER
 import com.homework.weatherapp.view.details.DetailsFragment
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MapsFragment : Fragment() {
 
@@ -31,7 +33,7 @@ class MapsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var map: GoogleMap
     private val markers: ArrayList<Marker> = arrayListOf()
-    private var searchAddressText: String?= null
+    private var searchAddressText: String? = null
     private var searchResultLat: Double? = null
     private var searchResultLon: Double? = null
 
@@ -39,7 +41,7 @@ class MapsFragment : Fragment() {
         map = googleMap
         val spb = LatLng(59.9342802, 30.335098600000038)
         permissionCheck()
-        with(map) {
+        map.apply {
             addMarker(MarkerOptions().position(spb).title("Marker in Saint Petersburg"))
             moveCamera(CameraUpdateFactory.newLatLng(spb))
             uiSettings.isZoomControlsEnabled = true
@@ -119,12 +121,13 @@ class MapsFragment : Fragment() {
 
     private fun drawLine() {
         var previousBefore: Marker? = null
-        markers.forEach { current->
-            previousBefore?.let{  previous->
+        markers.forEach { current ->
+            previousBefore?.let { previous ->
                 map.addPolyline(
-                    PolylineOptions().add(previous.position,current.position)
+                    PolylineOptions().add(previous.position, current.position)
                         .color(Color.RED)
-                        .width(5f))
+                        .width(5f)
+                )
             }
             previousBefore = current
         }
@@ -159,41 +162,58 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        initButtons()
+    }
 
-        
+    private fun initButtons() {
         binding.buttonSearch.setOnClickListener {
             searchAddress()
         }
-
         binding.buttonSearchWeather.setOnClickListener {
             searchWeather()
         }
-        
     }
 
     private fun searchWeather() {
         requireActivity().supportFragmentManager.beginTransaction().add(
             R.id.fragment_container,
             DetailsFragment.newInstance(Bundle().apply {
-                putParcelable(KEY_BUNDLE_WEATHER, Weather(City(searchAddressText!!,searchResultLat!!,searchResultLon!!)))
+                if (!searchAddressText.isNullOrEmpty() && searchResultLat != null && searchResultLon != null) {
+                    putParcelable(
+                        KEY_BUNDLE_WEATHER,
+                        Weather(City(searchAddressText!!, searchResultLat!!, searchResultLon!!))
+                    )
+                }
             })
         )
             .addToBackStack("").commit()
     }
 
     private fun searchAddress() {
-        searchAddressText =  binding.searchAddress.text.trim().toString()
-        val geocoder = Geocoder(requireContext())
-       val searchResult=  geocoder.getFromLocationName(searchAddressText,1)[0]
-        searchResultLat = searchResult.latitude
-        searchResultLon = searchResult.longitude
+        try {
+            searchAddressText = binding.searchAddress.text.trim().toString()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+            val geocoder = Geocoder(requireContext())
+            Thread {
+                if (!searchAddressText.isNullOrEmpty()) {
+                    val searchResult = geocoder.getFromLocationName(searchAddressText, 1)[0]
+                    searchResultLat = searchResult.latitude
+                    searchResultLon = searchResult.longitude
+                }
+            }.start()
 
-        val newMarker = LatLng(
-            searchResultLat!!,
-            searchResultLon!!
-        )
-        map.addMarker(MarkerOptions().position(newMarker).title("Marker in Saint Petersburg"))
-        map.moveCamera(CameraUpdateFactory.newLatLng(newMarker))
+            val newMarker = LatLng(
+                searchResultLat!!,
+                searchResultLon!!
+            )
+            with(map) {
+                addMarker(MarkerOptions().position(newMarker).title("Marker in Saint Petersburg"))
+                moveCamera(CameraUpdateFactory.newLatLngZoom(newMarker, 10f))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showAlertDialog(getString(R.string.searchText_mistake), getString(R.string.check_text))
+        }
     }
 
     override fun onDestroyView() {
