@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "484998946245",
+    "project_id": "hallowed-forge-349909",
+    "storage_bucket": "hallowed-forge-349909.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484998946245:android:7620db5a60d080847b7fac",
+        "android_client_info": {
+          "package_name": "com.homework.weatherapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484998946245-pfnaej1at4ks2i2t1kl2em3gfsb88df0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.homework.weatherapp",
+            "certificate_hash": "4e161b1957dac57e79b6cee0dab4c3cbf28ae1d8"
+          }
+        },
+        {
+          "client_id": "484998946245-q3fnc8tg04mo907tbkhf2dn71eald86c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7okeMa8VEPKku8Ie3OnoVc4IDIL9fhBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484998946245-q3fnc8tg04mo907tbkhf2dn71eald86c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
