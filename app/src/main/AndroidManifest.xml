@@ -18,6 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApp"
         android:usesCleartextTraffic="true">
+        <service
+            android:name="com.homework.lesson_11.NotificationService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
