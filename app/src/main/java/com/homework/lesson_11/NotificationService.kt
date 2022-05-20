@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -39,12 +38,12 @@ class NotificationService : FirebaseMessagingService() {
             }
 
         val notificationBuilderHigh =
-            NotificationCompat.Builder(applicationContext, CHANNEL_ID_LOW).apply {
+            NotificationCompat.Builder(applicationContext, CHANNEL_ID_HIGH).apply {
                 setSmallIcon(R.drawable.ic_baseline_warning_24)
                     .setLargeIcon(
                         BitmapFactory.decodeResource(
                             resources,
-                        R.drawable.squirrel))
+                            R.drawable.squirrel))
                 setContentTitle(title)
                 setContentText(message)
                 priority = NotificationCompat.PRIORITY_HIGH
@@ -53,19 +52,24 @@ class NotificationService : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannelLow(notificationManager)
-            createNotificationChannelHigh(notificationManager)
-
+            notificationManager.notify(NOTIFICATION_ID_LOW, notificationBuilderLow.build())
         }
-        notificationManager.notify(NOTIFICATION_ID_LOW, notificationBuilderLow.build())
-        notificationManager.notify(NOTIFICATION_ID_HIGH, notificationBuilderHigh.build())
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannelHigh(notificationManager)
+            notificationManager.notify(NOTIFICATION_ID_HIGH, notificationBuilderHigh.build())
+        }
+
+
+
     }
 
     private fun createNotificationChannelLow(
         notificationManager:
         NotificationManager
     ) {
-        val name = "Low priority Channel"
-        val descriptionText = "Channel description"
+        val name = getString(R.string.channel_name_low)
+        val descriptionText = getString(R.string.channel_desc)
         val importance = NotificationManager.IMPORTANCE_LOW
         val channel = NotificationChannel(CHANNEL_ID_LOW, name, importance).apply {
             description = descriptionText
@@ -77,13 +81,14 @@ class NotificationService : FirebaseMessagingService() {
         notificationManager:
         NotificationManager
     ) {
-        val name = "High priority Channel"
-        val descriptionText = "Channel description"
+        val name = getString(R.string.channel_name_high)
+        val descriptionText = getString(R.string.channel_desc)
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channel = NotificationChannel(CHANNEL_ID_HIGH, name, importance).apply {
             description = descriptionText
-            enableLights(true)
-            lightColor = Color.RED
+            enableVibration(true)
+            vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+
         }
         notificationManager.createNotificationChannel(channel)
     }
