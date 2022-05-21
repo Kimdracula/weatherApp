@@ -34,5 +34,8 @@
     <string name="find_weather">Узнать погоду</string>
     <string name="searchText_mistake">Ошибка ввода</string>
     <string name="check_text">Проверьте правильность ввода!</string>
+    <string name="channel_name_low">Low priority Channel</string>
+    <string name="channel_desc">Channel description</string>
+    <string name="channel_name_high">High priority Channel</string>
 
 </resources>

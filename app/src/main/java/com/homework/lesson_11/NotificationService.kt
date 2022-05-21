@@ -43,9 +43,13 @@ class NotificationService : FirebaseMessagingService() {
                     .setLargeIcon(
                         BitmapFactory.decodeResource(
                             resources,
-                            R.drawable.squirrel))
+                            R.drawable.squirrel
+                        )
+                    )
                 setContentTitle(title)
                 setContentText(message)
+                setWhen(System.currentTimeMillis())
+                setAutoCancel(true)
                 priority = NotificationCompat.PRIORITY_HIGH
             }
 
@@ -59,7 +63,6 @@ class NotificationService : FirebaseMessagingService() {
             createNotificationChannelHigh(notificationManager)
             notificationManager.notify(NOTIFICATION_ID_HIGH, notificationBuilderHigh.build())
         }
-
 
 
     }
